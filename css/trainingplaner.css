@@ -1,0 +1,54 @@
+div[ng-app] { margin: 10px; }
+.btmtd { border-style: none; }
+.popover {
+    max-width: 600px;
+}
+form[editable-form] > div {margin: 10px 0;}
+
+body
+{
+	margin: 15px;
+}
+
+#abs_right
+{
+	position: absolute;
+	right: 0px;
+	top: 0px;
+}
+
+#main
+{
+	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#plans
+{
+	
+}
+
+#plan_header
+{
+	margin-top: 60px;
+	position: relative;
+}
+
+#plan_content
+{
+	position: relative;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 30px;
+	padding-top: 30px;
+}
+
+caption.weekDay
+{
+	font-size: 14px; 
+	font-weight: bold;
+	width: 100%;
+	text-align: center;
+}
