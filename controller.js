@@ -170,7 +170,7 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 			url: requestUrl,
 			data: {
 				action: 'AddTraining',
-				obj: JSON.parse('{"week" : '+week.id+', "day" : '+day+', "sport" : 6, "type" : 9, "volume" : "", "annotation" : ""}')
+				obj: JSON.parse('{"week" : '+week.id+', "day" : '+day+', "sport" : 6, "type" : 9, "annotation" : "", "durationhours" : 0, "durationminutes" : 0}')
 			}
 		});
 		request.success(function (response) {
@@ -290,6 +290,37 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 			break;
 		}
 	}
+  }
+  
+  $scope.calcVolume = function(week) {
+	var runMins = 0;
+	var runHours = 0;
+	var otherMins = 0;
+	var otherHours = 0;
+	for(var i=0; i< week.trainings.length; i++)  
+	{
+		if(week.trainings[i].sportandtype.sport == 'Laufen')
+		{
+			runMins += week.trainings[i].durationminutes;
+			runHours += week.trainings[i].durationhours;
+			if(runMins >= 59)
+			{
+				runHours++;
+				runMins %= 60;
+			}
+		}
+		else
+		{
+			otherMins += week.trainings[i].durationminutes;
+			otherHours += week.trainings[i].durationhours;
+			if(otherMins >= 59)
+			{
+				otherHours++;
+				otherMins %= 60;
+			}
+		}
+	}
+	return '(Kompletter Umfang: Laufen ' + runHours + 'h ' + runMins + ' min, Sonstige ' + otherHours + 'h ' + otherMins + ' min)';
   }
   
 }).directive('popover', function($compile) {

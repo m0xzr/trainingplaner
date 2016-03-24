@@ -74,7 +74,7 @@
     <h3 class="panel-title">Information zur Woche</h3>
   </div>
   <div class="panel-body">
-    {{ week.annotation || '' }}
+    {{ week.annotation || '' }} {{calcVolume(week)}}
  </div>
 </div>
 <div ng-repeat="d in range(7) track by $index" >

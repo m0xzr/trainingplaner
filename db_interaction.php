@@ -100,7 +100,7 @@
 				}
 				break;
 			case "EditTraining":
-				if(isset($obj->id)/* && isset($obj->type)*/ && isset($obj->annotation) && isset($obj->durationhours) && isset($obj->durationminutes))
+				if(isset($obj->id)/* && isset($obj->type)*/ && isset($obj->annotation) && isset($obj->durationhours) && isset($obj->durationminutes) && ctype_digit((string)$obj->durationhours) && ctype_digit((string)$obj->durationminutes))
 				{
 					print_r(json_encode(PlanerDAL::EditTraining($obj->id, $obj->sport, $obj->type, $obj->annotation, $obj->durationhours, $obj->durationminutes)));
 				}

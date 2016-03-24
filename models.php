@@ -42,8 +42,6 @@ class Week implements JsonSerializable
 	public $WeekNumber;		//Nummer der Woche im Trainingsplan
 	public $Annotation;
 	public $Trainings = array();
-	public $TotalAmountHours = 0;
-	public $TotalAmountMinutes = 0;
 	
 	public function __construct($iD, $weekNumber, $annotation, $trainings) 
 	{
@@ -51,17 +49,6 @@ class Week implements JsonSerializable
 		$this->WeekNumber = $weekNumber;
 		$this->Annotation = $annotation;
 		$this->Trainings = $trainings;
-		
-		for($i = 0; $i < sizeof($this->Trainings); $i++)
-	    {
-	        $this->TotalAmountHours += $this->Trainings[$i]->DurationHours;
-	        $this->TotalAmountMinutes += $this->Trainings[$i]->DurationMinutes;
-			if($this->TotalAmountMinutes >= 60)
-			{
-				$this->TotalAmountHours++;
-				$this->TotalAmountMinutes %= 60;
-			}
-	    }
 	}
 	
 	public function jsonSerialize() 
@@ -71,7 +58,7 @@ class Week implements JsonSerializable
 		[
             'id' => $this->ID,
             'weeknumber' => $this->WeekNumber,
-			'annotation' => $this->Annotation.' (gesamter Umfang '.$this->TotalAmountHours.'h '.$this->TotalAmountMinutes.'min)',
+			'annotation' => $this->Annotation,
 			'trainings' => $this->Trainings,
         ];
     }
