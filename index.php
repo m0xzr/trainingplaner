@@ -2,7 +2,7 @@
 <html ng-app="app">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Trainingplaner_dev</title>
+<title>Trainingplaner</title>
 <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
 <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
 
