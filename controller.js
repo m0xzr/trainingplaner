@@ -7,7 +7,7 @@ app.run(function(editableOptions) {
 
 
 app.controller('Ctrl', function($scope, $filter, $http) {
-	var requestUrl = "http://lerche.dyndns.info:4980/runalyze/trainingplaner/db_interaction.php";
+	var requestUrl = "http://lerche.dyndns.info:4980/runalyze/trainingplaner_dev/trainingplaner/db_interaction.php";
 	$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
 	$scope.weekTitle = '';
@@ -164,16 +164,18 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 		$scope.weekTitle = '';
   };
 
-  $scope.addTraining = function(week, day) {
+  $scope.addTraining = function(week, day, planedDone) {
+	  console.log(JSON.parse('{"week" : '+week.id+', "day" : '+day+', "sport" : 6, "type" : 9, "annotation" : "", "durationhours" : 0, "durationminutes" : 0, "planeddone"  : '+planedDone+'}'));
 	 var request = $http({
 			method: "post",
 			url: requestUrl,
 			data: {
 				action: 'AddTraining',
-				obj: JSON.parse('{"week" : '+week.id+', "day" : '+day+', "sport" : 6, "type" : 9, "annotation" : "", "durationhours" : 0, "durationminutes" : 0}')
+				obj: JSON.parse('{"week" : '+week.id+', "day" : '+day+', "sport" : 6, "type" : 9, "annotation" : "", "durationhours" : 0, "durationminutes" : 0, "planeddone"  : '+planedDone+'}')
 			}
 		});
 		request.success(function (response) {
+			console.log(response);
 			//alert(response);
 			week.trainings.push(response);
 		}).

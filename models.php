@@ -11,8 +11,9 @@ class Training implements JsonSerializable
 	public $SportAndType;
 	public $DurationHours;
 	public $DurationMinutes;
+	public $PlanedDone;
 	
-	public function __construct($iD, $day, $annotation, $durationHours, $durationMinutes, $sportAndType) 
+	public function __construct($iD, $day, $annotation, $durationHours, $durationMinutes, $sportAndType, $planedDone) 
 	{
 	  $this->ID = $iD;
 	  $this->Day = $day;
@@ -20,6 +21,7 @@ class Training implements JsonSerializable
 	  $this->DurationHours = $durationHours;
 	  $this->DurationMinutes = $durationMinutes;
 	  $this->SportAndType = $sportAndType;	 
+	  $this->PlanedDone = $planedDone;
 	}
 	
 	public function jsonSerialize() 
@@ -31,7 +33,8 @@ class Training implements JsonSerializable
 			'annotation' => $this->Annotation,
 			'durationhours' => $this->DurationHours,
 			'durationminutes' => $this->DurationMinutes,
-			'sportandtype' => $this->SportAndType			
+			'sportandtype' => $this->SportAndType,			
+			'planeddone' => $this->PlanedDone			
         ];
     }
 }

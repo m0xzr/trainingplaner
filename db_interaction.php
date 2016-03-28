@@ -94,9 +94,9 @@
 				}
 				break;
 			case "AddTraining":
-				if(isset($obj->week) && isset($obj->day) && isset($obj->sport) && isset($obj->type) && isset($obj->annotation) && isset($obj->durationhours) && isset($obj->durationminutes))
+				if(isset($obj->week) && isset($obj->day) && isset($obj->sport) && isset($obj->type) && isset($obj->annotation) && isset($obj->durationhours) && isset($obj->durationminutes) && isset($obj->planeddone))
 				{
-					print_r(json_encode(PlanerDAL::AddTraining($obj->week, $obj->day, $obj->sport, $obj->type, $obj->annotation, $obj->durationhours, $obj->durationminutes)));
+					print_r(json_encode(PlanerDAL::AddTraining($obj->week, $obj->day, $obj->sport, $obj->type, $obj->annotation, $obj->durationhours, $obj->durationminutes, $obj->planeddone)));
 				}
 				break;
 			case "EditTraining":

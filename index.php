@@ -86,7 +86,10 @@
       <td style="width:20%">Umfang</td>
       <td style="width:50%">Notizen</td>
     </tr>
-    <tr ng-repeat="training in week.trainings | filter: { day: ($index + 1) }">
+	<tr style="background-color: #efefef; height: 10px;">
+		<td colspan="5" style="text-align: center">Soll</td>
+	</tr>
+    <tr ng-repeat="training in week.trainings | filter: { day: ($index + 1), planeddone: false }">
       <td>
         <!-- editable status (select-local) | {{ showSport(training) }} -->
         <span editable-select="training.sportandtype.id" e-name="sport" e-form="rowform" e-ng-options="i.id as i.sport for i in sportsandtypes" e-ng-change="changeData(training, $data)">
@@ -138,7 +141,66 @@
       </td>
     </tr>
 	<tr>
-		<td class="btmtd" colspan="5"><button class="btn btn-default" ng-click="addTraining(week, $index + 1)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Training hinzufügen</button></td>
+		<td class="btmtd" colspan="5"><button class="btn btn-default" ng-click="addTraining(week, $index + 1, false)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>geplantes Training hinzufügen</button></td>
+	</tr>
+	<!-- darüber geplant -->
+	<tr style="background-color: #efefef; height: 10px;">
+		<td colspan="5" style="text-align: center">Ist</td>
+	</tr>
+	<!-- darunter erfüllt -->
+	<tr ng-repeat="training in week.trainings | filter: { day: ($index + 1), planeddone: true }">
+      <td>
+        <!-- editable status (select-local) | {{ showSport(training) }} -->
+        <span editable-select="training.sportandtype.id" e-name="sport" e-form="rowform" e-ng-options="i.id as i.sport for i in sportsandtypes" e-ng-change="changeData(training, $data)">
+          {{ training.sportandtype.sport }}
+        </span>
+      </td>
+      <td>
+        <!-- editable group (select-remote)foos in elements | onshow="loadTypes(training)" {{ showType(training) }} i.id as i.type for i in (sportsandtypes | filter: filterTypes(training.sportandtype.id))[0].types -->
+        <span editable-select="training.sportandtype.types[0].id" e-name="type" e-form="rowform" e-ng-options="i.id as i.type for i in (sportsandtypes | filter: {id : training.sportandtype.id})[0].types">
+          {{ training.sportandtype.types[0].type || "" }}
+        </span>
+      </td>
+	  <td>
+		<table><tr>
+			<td>
+				<span editable-text="training.durationhours" e-name="durationhours" e-form="rowform">
+				  {{ training.durationhours || "0" }}
+				</span>
+			</td>
+			<td>h</td>
+			<td>&nbsp;</td>
+			<td>
+				<span editable-text="training.durationminutes" e-name="durationminutes" e-form="rowform">
+				  {{ training.durationminutes || "0" }}
+				</span>
+			</td>
+			<td>min</td>
+		</tr></table>
+      </td>
+	  <td>
+        <span editable-text="training.annotation" e-name="annotation" e-form="rowform">
+          {{ training.annotation || "" }}
+        </span>
+      </td>
+      <td style="white-space: nowrap">
+        <!-- form -->
+        <form editable-form name="rowform" onbeforesave="editTraining(week, training, $data)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == training">
+          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+          </button>
+          <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+          </button>
+        </form>
+        <div class="buttons" ng-show="!rowform.$visible">
+          <button class="btn btn-primary" ng-click="rowform.$show()"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
+          <button class="btn btn-danger" ng-click="removeTraining(week, training)"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
+        </div>  
+      </td>
+    </tr>
+	<tr>
+		<td class="btmtd" colspan="5"><button class="btn btn-default" ng-click="addTraining(week, $index + 1, true)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>absolviertes Training hinzufügen</button></td>
 	</tr>
   </table>
   

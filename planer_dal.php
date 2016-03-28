@@ -408,7 +408,7 @@ class PlanerDAL
 	    $retVal = null;
 
 		$conn = self::GetDbConnection();
-		$sql = sprintf("SELECT id, Day, Sport, Type, Annotation, DurationHours, DurationMinutes FROM Training WHERE id = %d", $trainingid);
+		$sql = sprintf("SELECT id, Day, Sport, Type, Annotation, DurationHours, DurationMinutes, PlanedDone FROM Training WHERE id = %d", $trainingid);
 		$result = $conn->query($sql);
 		if ($result->num_rows > 0) 
 		{
@@ -421,9 +421,10 @@ class PlanerDAL
 				$annotation = $row["Annotation"];
 				$durationHours = intval($row["DurationHours"]);
 				$durationMinutes = intval($row["DurationMinutes"]);
+				$planedDone = boolval($row["PlanedDone"]);
 				$sportAndType = RunalyzeDAL::GetSportAndType(intval($row["Sport"]), intval($row["Type"]));
 				
-				$retVal = new Training($id, $day, $annotation, $durationHours, $durationMinutes, $sportAndType);
+				$retVal = new Training($id, $day, $annotation, $durationHours, $durationMinutes, $sportAndType, $planedDone);
 			}
 		} 
 		else 
@@ -435,22 +436,23 @@ class PlanerDAL
 		return $retVal;
 	}
 	
-	public static function AddTraining($week, $day, $sport, $type, $annotation, $durationHours, $durationMinutes)
+	public static function AddTraining($week, $day, $sport, $type, $annotation, $durationHours, $durationMinutes, $planedDone)
 	{
 		$conn = self::GetDbConnection();
-		$sql = sprintf("INSERT INTO Training (Week, Day, Sport, Type, Annotation, DurationHours, DurationMinutes) VALUES (%d, %d, %d, %d, '%s', %d, %d)",
+		$sql = sprintf("INSERT INTO Training (Week, Day, Sport, Type, Annotation, DurationHours, DurationMinutes, PlanedDone) VALUES (%d, %d, %d, %d, '%s', %d, %d, %b)",
 							$week,
 							$day,
 							$sport,
 							$type,
 							$conn->real_escape_string($annotation),
 							$durationHours,
-							$durationMinutes);
+							$durationMinutes,
+							$planedDone);
 		$retVal;
 		if ($conn->query($sql) === TRUE) 
 		{
 			$sportAndType = RunalyzeDAL::GetSportAndType($sport, $type);
-			$retVal = new Training($conn->insert_id, $day, $annotation, $durationHours, $durationMinutes, $sportAndType);
+			$retVal = new Training($conn->insert_id, $day, $annotation, $durationHours, $durationMinutes, $sportAndType, $planedDone);
 		} 
 		else 
 		{
