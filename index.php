@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="css/xeditable.css">
 <link rel="stylesheet" href="css/trainingplaner.css">
 <script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/angular-sanitize.min.js"></script>
 <script type="text/javascript" src="js/xeditable.min.js"></script>
 <script type='text/javascript' src="js/jquery-1.12.1.min.js"></script>
 <script type='text/javascript' src="bootstrap/js/bootstrap.min.js"></script>
@@ -73,13 +74,12 @@
   <div class="panel-heading">
     <h3 class="panel-title">Information zur Woche</h3>
   </div>
-  <div class="panel-body">
-    {{ week.annotation || '' }} {{calcVolume(week)}}
+  <div class="panel-body" ng-bind-html="getWeekInfos(week) | sanitize">
  </div>
 </div>
 <div ng-repeat="d in range(7) track by $index" >
   <table class="table table-bordered table-hover table-condensed">
-	<caption class="weekDay">{{ showDay($index + 1) }}</caption>
+	<caption class="weekDay">Tag {{ $index + 1 }}</caption>
     <tr style="font-weight: bold">
       <td style="width:15%">Sport</td>
       <td style="width:15%">Typ</td>
@@ -87,7 +87,7 @@
       <td style="width:50%">Notizen</td>
     </tr>
 	<tr style="background-color: #efefef; height: 10px;">
-		<td colspan="5" style="text-align: center">Soll</td>
+		<td colspan="5" class="planedDone">Soll</td>
 	</tr>
     <tr ng-repeat="training in week.trainings | filter: { day: ($index + 1), planeddone: false }">
       <td>
@@ -145,7 +145,7 @@
 	</tr>
 	<!-- darüber geplant -->
 	<tr style="background-color: #efefef; height: 10px;">
-		<td colspan="5" style="text-align: center">Ist</td>
+		<td colspan="5"  class="planedDone">Ist</td>
 	</tr>
 	<!-- darunter erfüllt -->
 	<tr ng-repeat="training in week.trainings | filter: { day: ($index + 1), planeddone: true }">

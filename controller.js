@@ -1,10 +1,14 @@
-var app = angular.module("app", ["xeditable"]);
+var app = angular.module("app", ["xeditable", "ngSanitize"]);
 
 app.run(function(editableOptions) {
   editableOptions.theme = 'bs3';
 });
 
-
+app.filter("sanitize", ['$sce', function($sce) {
+  return function(htmlCode){
+    return $sce.trustAsHtml(htmlCode);
+  }
+}]);
 
 app.controller('Ctrl', function($scope, $filter, $http) {
 	var requestUrl = "http://lerche.dyndns.info:4980/runalyze/trainingplaner_dev/trainingplaner/db_interaction.php";
@@ -57,29 +61,6 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 	$scope.range = function(n) {
         return new Array(n);
     };
-
-	$scope.showDay = function(day) {
-		
-		switch(day) 
-		{
-		case 1:
-			return 'Mo';
-		case 2:
-			return 'Di';
-		case 3:
-			return 'Mi';
-		case 4:
-			return 'Do';
-		case 5:
-			return 'Fr';
-		case 6:
-			return 'Sa';
-		case 7:
-			return 'So';
-		default:
-			return 'Not set';
-		}
-  };
   
   $scope.getPlan = function(plan) {
 		var request = $http({
@@ -294,13 +275,38 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 	}
   }
   
-  $scope.calcVolume = function(week) {
+  $scope.getWeekInfos = function(week) {
+	var planedVolumeMap = new Map();
+	var doneVolumeMap = new Map();
 	var runMins = 0;
 	var runHours = 0;
 	var otherMins = 0;
 	var otherHours = 0;
 	for(var i=0; i< week.trainings.length; i++)  
 	{
+		if(week.trainings[i].planeddone == 0)
+		{
+			var mins = planedVolumeMap.get(week.trainings[i].sportandtype.sport);
+			if(mins === undefined)
+			{
+				mins = 0;
+			}
+			mins += week.trainings[i].durationhours * 60 + week.trainings[i].durationminutes;
+			
+			planedVolumeMap.set(week.trainings[i].sportandtype.sport, mins);
+		}
+		else if(week.trainings[i].planeddone == 1)
+		{
+			var mins = doneVolumeMap.get(week.trainings[i].sportandtype.sport);
+			if(mins === undefined)
+			{
+				mins = 0;
+			}
+			mins += week.trainings[i].durationhours * 60 + week.trainings[i].durationminutes;
+			
+			doneVolumeMap.set(week.trainings[i].sportandtype.sport, mins);
+		}
+		
 		if(week.trainings[i].sportandtype.sport == 'Laufen')
 		{
 			runMins += week.trainings[i].durationminutes;
@@ -322,7 +328,24 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 			}
 		}
 	}
-	return '(Kompletter Umfang: Laufen ' + runHours + 'h ' + runMins + ' min, Sonstige ' + otherHours + 'h ' + otherMins + ' min)';
+	
+	var retVal = week.annotation + '<hr />Geplantes Training:<ul>';
+	for (var [key, value] of planedVolumeMap) 
+	{
+		var hours = Math.floor(value / 60);
+		var mins = value % 60;
+		retVal += '<li>' + key + ': ' + hours + 'h ' + mins + 'min' + '</li>';
+	}
+	retVal += '</ul><hr />Absolviertes Training:<ul>';
+	for (var [key, value] of doneVolumeMap) 
+	{
+		var hours = Math.floor(value / 60);
+		var mins = value % 60;
+		retVal += '<li>' + key + ': ' + hours + 'h ' + mins + 'min' + '</li>';
+	}
+	retVal += '</ul>';
+	
+	return retVal;
   }
   
 }).directive('popover', function($compile) {

@@ -52,3 +52,9 @@ caption.weekDay
 	width: 100%;
 	text-align: center;
 }
+
+td.planedDone
+{
+	text-align: center;
+	font-style: italic;
+}
