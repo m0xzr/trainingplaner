@@ -52,7 +52,7 @@
 	<h1 id="plan">{{ plan.title || '' }}</h1>
 	<button class="btn btn-danger btn-xs" id="abs_right" ng-click="removePlan(plans, plan)"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
 	<ul class="nav nav-tabs">
-		<li ng-repeat="week in plan.weeks" ng-class="{active: $index == 0}"><a data-toggle="tab" href="#week{{$index + 1}}">Woche {{ week.weeknumber || "empty" }}</a></li>
+		<li ng-repeat="week in plan.weeks" ng-class="{'active':$last}"><a data-toggle="tab" href="#week{{$index + 1}}">Woche {{ week.weeknumber || "empty" }}</a></li>
 		<li>
 			<a data-container="body" data-toggle="popover" data-placement="right" id="new-week-popover" popover><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 				<div id="popover-head-week" class="hide">Information zur Woche</div>
@@ -68,7 +68,7 @@
 	</ul>
 </div>
 <div class="tab-content" id="plan_content">
-<div class="tab-pane fade in" id="week{{$index + 1}}" ng-repeat="week in plan.weeks" ng-class="{active: $index == 0}" >
+<div class="tab-pane fade in" id="week{{$index + 1}}" ng-repeat="week in plan.weeks" ng-class="{'active':$last}" >
 <button class="btn btn-danger btn-xs"  id="abs_right" ng-click="removeWeek(plan, week)"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
 <div class="panel panel-info">
   <div class="panel-heading">

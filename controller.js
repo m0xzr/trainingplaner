@@ -278,11 +278,13 @@ app.controller('Ctrl', function($scope, $filter, $http) {
   $scope.getWeekInfos = function(week) {
 	var planedVolumeMap = new Map();
 	var doneVolumeMap = new Map();
-	var runMins = 0;
-	var runHours = 0;
-	var otherMins = 0;
-	var otherHours = 0;
-	for(var i=0; i< week.trainings.length; i++)  
+	var planedKeys = [];
+	var doneKeys = [];
+	var planedTotal = 0;
+	var doneTotal = 0;
+	
+	//Maps mit den Trainingsminuten und Sportarten befüllen
+	for(var i = 0; i< week.trainings.length; i++)  
 	{
 		if(week.trainings[i].planeddone == 0)
 		{
@@ -290,8 +292,10 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 			if(mins === undefined)
 			{
 				mins = 0;
+				planedKeys.push(week.trainings[i].sportandtype.sport);
 			}
 			mins += week.trainings[i].durationhours * 60 + week.trainings[i].durationminutes;
+			planedTotal += week.trainings[i].durationhours * 60 + week.trainings[i].durationminutes;
 			
 			planedVolumeMap.set(week.trainings[i].sportandtype.sport, mins);
 		}
@@ -301,49 +305,39 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 			if(mins === undefined)
 			{
 				mins = 0;
+				doneKeys.push(week.trainings[i].sportandtype.sport);
 			}
 			mins += week.trainings[i].durationhours * 60 + week.trainings[i].durationminutes;
+			doneTotal += week.trainings[i].durationhours * 60 + week.trainings[i].durationminutes;
 			
 			doneVolumeMap.set(week.trainings[i].sportandtype.sport, mins);
 		}
-		
-		if(week.trainings[i].sportandtype.sport == 'Laufen')
-		{
-			runMins += week.trainings[i].durationminutes;
-			runHours += week.trainings[i].durationhours;
-			if(runMins >= 59)
-			{
-				runHours++;
-				runMins %= 60;
-			}
-		}
-		else
-		{
-			otherMins += week.trainings[i].durationminutes;
-			otherHours += week.trainings[i].durationhours;
-			if(otherMins >= 59)
-			{
-				otherHours++;
-				otherMins %= 60;
-			}
-		}
 	}
 	
-	var retVal = week.annotation + '<hr />Geplantes Training:<ul>';
-	for (var [key, value] of planedVolumeMap) 
+	//Maps sortieren
+	planedKeys.sort();
+	doneKeys.sort();
+	
+	//ausgeben
+	var retVal = week.annotation + '<hr /><h3>Geplantes Training:</h3><dl class="inline">';
+	for (var i = 0; i < planedKeys.length; i++) 
 	{
+		var key = planedKeys[i];
+		var value = planedVolumeMap.get(key);
 		var hours = Math.floor(value / 60);
 		var mins = value % 60;
-		retVal += '<li>' + key + ': ' + hours + 'h ' + mins + 'min' + '</li>';
+		retVal += '<dt>' + key + '</dt><dd>' + hours + 'h ' + mins + 'min' + '</dd>';
 	}
-	retVal += '</ul><hr />Absolviertes Training:<ul>';
-	for (var [key, value] of doneVolumeMap) 
+	retVal += '<dt class="sum">Komplett</dt><dd class="sum">' + Math.floor(planedTotal / 60) + 'h ' + planedTotal % 60 + 'min</dd></dl><hr /><h3>Absolviertes Training:</h3><dl class="inline">';
+	for (var i = 0; i < doneKeys.length; i++) 
 	{
+		var key = doneKeys[i];
+		var value = doneVolumeMap.get(key);
 		var hours = Math.floor(value / 60);
 		var mins = value % 60;
-		retVal += '<li>' + key + ': ' + hours + 'h ' + mins + 'min' + '</li>';
+		retVal += '<dt>' + key + '</dt><dd>' + hours + 'h ' + mins + 'min' + '</dd>';
 	}
-	retVal += '</ul>';
+	retVal += '<dt class="sum">Komplett</dt><dd class="sum">' + Math.floor(doneTotal / 60) + 'h ' + doneTotal % 60 + 'min</dd></dl>';
 	
 	return retVal;
   }

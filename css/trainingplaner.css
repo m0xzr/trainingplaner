@@ -10,6 +10,43 @@ body
 	margin: 15px;
 }
 
+h3
+{
+	font-size: 14px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+dl.inline dd {
+  display: inline;
+  margin: 0;
+}
+dl.inline dd:after
+{
+  display: block;
+  content: '';
+}
+dl.inline dt
+{
+  display: inline-block;
+  min-width: 150px;
+}
+
+dt.sum
+{
+	font-style: italic;
+}
+
+dd.sum
+{
+	font-style: italic;
+}
+
+dt:after 
+{
+  content: ": ";
+}
+
 #abs_right
 {
 	position: absolute;
