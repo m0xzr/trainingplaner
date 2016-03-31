@@ -2,6 +2,7 @@
 
 include_once  'models.php';
 include_once  'runalyze_dal.php';
+include_once  'credentials_provider.php';
 
 /*
 
@@ -46,12 +47,6 @@ PRIMARY KEY (ID)
 */
 class PlanerDAL
 {
-	private static $host = 'localhost';
-	private static $port = '3306';
-	private static $db = 'trainingplaner';
-	private static $username = 'root';
-	private static $password = 'ltit1703!90';
-	
 	private static $db_con_isopened = false;
 	private static $db_con;
 	private static $numberOfDbCalls = 0;			//Anzahl an Anfragen an die DB
@@ -62,7 +57,7 @@ class PlanerDAL
 		self::$numberOfDbCalls++;
 		if(self::$db_con_isopened == false)
 		{
-			self::$db_con = new mysqli(self::$host, self::$username, self::$password, self::$db);
+			self::$db_con = new mysqli(CredentialsProvider::$tphost, CredentialsProvider::$tpusername, CredentialsProvider::$tppassword, CredentialsProvider::$tpdb);
 			if (self::$db_con->connect_error) 
 			{
 				die("Connection failed: " . self::$db_con->connect_error);
