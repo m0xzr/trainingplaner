@@ -94,15 +94,15 @@
 				}
 				break;
 			case "AddTraining":
-				if(isset($obj->week) && isset($obj->day) && isset($obj->sport) && isset($obj->type) && isset($obj->annotation) && isset($obj->durationhours) && isset($obj->durationminutes) && isset($obj->planeddone))
+				if(isset($obj->week) && isset($obj->day) && isset($obj->sport) && isset($obj->type) && isset($obj->annotation) && isset($obj->durationhours) && isset($obj->durationminutes) && isset($obj->planeddone) && isset($obj->planeddone) && isset($obj->avghr))
 				{
-					print_r(json_encode(PlanerDAL::AddTraining($obj->week, $obj->day, $obj->sport, $obj->type, $obj->annotation, $obj->durationhours, $obj->durationminutes, $obj->planeddone)));
+					print_r(json_encode(PlanerDAL::AddTraining($obj->week, $obj->day, $obj->sport, $obj->type, $obj->annotation, $obj->durationhours, $obj->durationminutes, $obj->planeddone, $obj->avghr)));
 				}
 				break;
 			case "EditTraining":
-				if(isset($obj->id)/* && isset($obj->type)*/ && isset($obj->annotation) && isset($obj->durationhours) && isset($obj->durationminutes) && ctype_digit((string)$obj->durationhours) && ctype_digit((string)$obj->durationminutes))
+				if(isset($obj->id)/* && isset($obj->type)*/ && isset($obj->annotation) && isset($obj->durationhours) && isset($obj->durationminutes) && ctype_digit((string)$obj->durationhours) && ctype_digit((string)$obj->durationminutes)&& isset($obj->avghr) && ctype_digit((string)$obj->avghr))
 				{
-					print_r(json_encode(PlanerDAL::EditTraining($obj->id, $obj->sport, $obj->type, $obj->annotation, $obj->durationhours, $obj->durationminutes)));
+					print_r(json_encode(PlanerDAL::EditTraining($obj->id, $obj->sport, $obj->type, $obj->annotation, $obj->durationhours, $obj->durationminutes, $obj->avghr)));
 				}
 				break;
 			case "RemoveTraining":
