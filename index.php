@@ -162,21 +162,24 @@
         </span>
       </td>
 	  <td>
-		<table><tr>
-			<td>
-				<span editable-text="training.durationhours" e-name="durationhours" e-form="rowform">
-				  {{ training.durationhours || "0" }}
-				</span>
-			</td>
-			<td>h</td>
-			<td>&nbsp;</td>
-			<td>
-				<span editable-text="training.durationminutes" e-name="durationminutes" e-form="rowform">
-				  {{ training.durationminutes || "0" }}
-				</span>
-			</td>
-			<td>min</td>
-		</tr></table>
+		<table>
+			<tr>
+				<td>
+					<span editable-text="training.durationhours" e-name="durationhours" e-form="rowform">
+					  {{ training.durationhours || "0" }}
+					</span>
+				</td>
+				<td>h</td>
+				<td>&nbsp;</td>
+				<td>
+					<span editable-text="training.durationminutes" e-name="durationminutes" e-form="rowform">
+					  {{ training.durationminutes || "0" }}
+					</span>
+				</td>
+				<td>min</td>
+			</tr>
+			<tr><td colspan="4" style="text-align: right"><span editable-text="training.avghr" e-name="avghr" e-form="rowform">{{ training.avghr || "0" }}</span></td><td>bpm(&empty;)</td></tr>
+		</table>
       </td>
 	  <td>
         <span editable-text="training.annotation" e-name="annotation" e-form="rowform">

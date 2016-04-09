@@ -146,13 +146,13 @@ app.controller('Ctrl', function($scope, $filter, $http) {
   };
 
   $scope.addTraining = function(week, day, planedDone) {
-	  console.log(JSON.parse('{"week" : '+week.id+', "day" : '+day+', "sport" : 6, "type" : 9, "annotation" : "", "durationhours" : 0, "durationminutes" : 0, "planeddone"  : '+planedDone+'}'));
+	  console.log(JSON.parse('{"week" : '+week.id+', "day" : '+day+', "sport" : 6, "type" : 9, "annotation" : "", "durationhours" : 0, "durationminutes" : 0, "planeddone"  : '+planedDone+', "avghr" : 0}'));
 	 var request = $http({
 			method: "post",
 			url: requestUrl,
 			data: {
 				action: 'AddTraining',
-				obj: JSON.parse('{"week" : '+week.id+', "day" : '+day+', "sport" : 6, "type" : 9, "annotation" : "", "durationhours" : 0, "durationminutes" : 0, "planeddone"  : '+planedDone+'}')
+				obj: JSON.parse('{"week" : '+week.id+', "day" : '+day+', "sport" : 6, "type" : 9, "annotation" : "", "durationhours" : 0, "durationminutes" : 0, "planeddone"  : '+planedDone+', "avghr" : 0}')
 			}
 		});
 		request.success(function (response) {
@@ -282,6 +282,7 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 	var doneKeys = [];
 	var planedTotal = 0;
 	var doneTotal = 0;
+	var trimp = 0;
 	
 	//Maps mit den Trainingsminuten und Sportarten befüllen
 	for(var i = 0; i< week.trainings.length; i++)  
@@ -309,6 +310,8 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 			}
 			mins += week.trainings[i].durationhours * 60 + week.trainings[i].durationminutes;
 			doneTotal += week.trainings[i].durationhours * 60 + week.trainings[i].durationminutes;
+
+			trimp += (week.trainings[i].durationminutes + week.trainings[i].durationhours * 60) * (week.trainings[i].avghr - 45)/(192 - 45) * 0.64 * Math.pow(Math.E, (1.92 * (week.trainings[i].avghr - 45)/(192 - 45)));
 			
 			doneVolumeMap.set(week.trainings[i].sportandtype.sport, mins);
 		}
@@ -337,7 +340,8 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 		var mins = value % 60;
 		retVal += '<dt>' + key + '</dt><dd>' + hours + 'h ' + mins + 'min' + '</dd>';
 	}
-	retVal += '<dt class="sum">Komplett</dt><dd class="sum">' + Math.floor(doneTotal / 60) + 'h ' + doneTotal % 60 + 'min</dd></dl>';
+	retVal += '<dt class="sum">Komplett</dt><dd class="sum">' + Math.floor(doneTotal / 60) + 'h ' + doneTotal % 60 + 'min</dd>';
+	retVal += '<dt class="sum">Trimp</dt><dd class="sum">' + trimp.toFixed(2) + '</dd></dl>';
 	
 	return retVal;
   }

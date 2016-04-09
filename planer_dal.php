@@ -16,6 +16,7 @@ Type int(11),
 DurationHours int(10) unsigned DEFAULT 0,
 DurationMinutes int(10) unsigned DEFAULT,
 PlanedDone bool NOT NULL DEFAULT FALSE,
+AvgHR int(5) unsigned Default 0,
 Annotation varchar(255),
 PRIMARY KEY (ID),
 CONSTRAINT fk_Week FOREIGN KEY (Week)
@@ -405,7 +406,7 @@ class PlanerDAL
 	    $retVal = null;
 
 		$conn = self::GetDbConnection();
-		$sql = sprintf("SELECT id, Day, Sport, Type, Annotation, DurationHours, DurationMinutes, PlanedDone FROM Training WHERE id = %d", $trainingid);
+		$sql = sprintf("SELECT id, Day, Sport, Type, Annotation, DurationHours, DurationMinutes, PlanedDone, AvgHR FROM Training WHERE id = %d", $trainingid);
 		$result = $conn->query($sql);
 		if ($result->num_rows > 0) 
 		{
@@ -419,9 +420,10 @@ class PlanerDAL
 				$durationHours = intval($row["DurationHours"]);
 				$durationMinutes = intval($row["DurationMinutes"]);
 				$planedDone = boolval($row["PlanedDone"]);
+				$avgHR = intval($row["AvgHR"]);
 				$sportAndType = RunalyzeDAL::GetSportAndType(intval($row["Sport"]), intval($row["Type"]));
 				
-				$retVal = new Training($id, $day, $annotation, $durationHours, $durationMinutes, $sportAndType, $planedDone);
+				$retVal = new Training($id, $day, $annotation, $durationHours, $durationMinutes, $sportAndType, $planedDone, $avgHR);
 			}
 		} 
 		else 
@@ -433,10 +435,10 @@ class PlanerDAL
 		return $retVal;
 	}
 	
-	public static function AddTraining($week, $day, $sport, $type, $annotation, $durationHours, $durationMinutes, $planedDone)
+	public static function AddTraining($week, $day, $sport, $type, $annotation, $durationHours, $durationMinutes, $planedDone, $avgHR)
 	{
 		$conn = self::GetDbConnection();
-		$sql = sprintf("INSERT INTO Training (Week, Day, Sport, Type, Annotation, DurationHours, DurationMinutes, PlanedDone) VALUES (%d, %d, %d, %d, '%s', %d, %d, %b)",
+		$sql = sprintf("INSERT INTO Training (Week, Day, Sport, Type, Annotation, DurationHours, DurationMinutes, PlanedDone, AvgHR) VALUES (%d, %d, %d, %d, '%s', %d, %d, %b, %d)",
 							$week,
 							$day,
 							$sport,
@@ -444,12 +446,13 @@ class PlanerDAL
 							$conn->real_escape_string($annotation),
 							$durationHours,
 							$durationMinutes,
-							$planedDone);
+							$planedDone,
+							0);
 		$retVal;
 		if ($conn->query($sql) === TRUE) 
 		{
 			$sportAndType = RunalyzeDAL::GetSportAndType($sport, $type);
-			$retVal = new Training($conn->insert_id, $day, $annotation, $durationHours, $durationMinutes, $sportAndType, $planedDone);
+			$retVal = new Training($conn->insert_id, $day, $annotation, $durationHours, $durationMinutes, $sportAndType, $planedDone, $avgHR);
 		} 
 		else 
 		{
@@ -460,7 +463,7 @@ class PlanerDAL
 		return $retVal;
 	}
 	
-	public static function EditTraining($id, $sport, $type, $annotation, $durationHours, $durationMinutes)
+	public static function EditTraining($id, $sport, $type, $annotation, $durationHours, $durationMinutes, $avgHR)
 	{
 		$conn = self::GetDbConnection();
 		
@@ -470,11 +473,12 @@ class PlanerDAL
 			$typeSet = "Type = NULL";
 		}
 		
-		$sql = sprintf("UPDATE Training set Sport = %s, ".$typeSet.", Annotation = '%s', DurationHours = %d, DurationMinutes = %d WHERE ID = %d",
+		$sql = sprintf("UPDATE Training set Sport = %s, ".$typeSet.", Annotation = '%s', DurationHours = %d, DurationMinutes = %d, AvgHR = %d WHERE ID = %d",
 								$conn->real_escape_string($sport),
 								$conn->real_escape_string($annotation),
 								$durationHours, 
 								$durationMinutes,
+								$avgHR,
 								$id);
 
 		if ($conn->query($sql) === TRUE) 
