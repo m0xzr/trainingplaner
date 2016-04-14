@@ -93,6 +93,7 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 			}
 		});
 		request.success(function (response) {
+			console.log(JSON.stringify(response));
 			$scope.userdata = response;
 		}).		error(function(response) {
 			alert("error");
