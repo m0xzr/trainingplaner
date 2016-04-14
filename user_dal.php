@@ -103,7 +103,7 @@ class UserDAL extends DAL
 		if ($conn->query($sql) === TRUE) 
 		{
 			//echo "New record created successfully";
-			$retVal = self::GetUserDataById($userid);
+			$retVal = self::GetUserDataById($id);
 		} 
 		else 
 		{
