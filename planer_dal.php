@@ -1,88 +1,10 @@
 <?php
 
-include_once  'models.php';
-include_once  'runalyze_dal.php';
-include_once  'credentials_provider.php';
+include_once  'sport_dal.php';
+include_once  'dal.php';
 
-/*
-
-CREATE TABLE trainingplaner.Training
-(
-ID int(10) unsigned NOT NULL AUTO_INCREMENT,
-Week int(10) unsigned NOT NULL,
-Day int NOT NULL,
-Sport int(10) unsigned,
-Type int(11),
-DurationHours int(10) unsigned DEFAULT 0,
-DurationMinutes int(10) unsigned DEFAULT,
-PlanedDone bool NOT NULL DEFAULT FALSE,
-AvgHR int(5) unsigned Default 0,
-Annotation varchar(255),
-PRIMARY KEY (ID),
-CONSTRAINT fk_Week FOREIGN KEY (Week)
-REFERENCES trainingplaner.Week(id),
-CONSTRAINT fk_Sport FOREIGN KEY (Sport)
-REFERENCES runalyze.runalyze_sport(id),
-CONSTRAINT fk_Type FOREIGN KEY (Type)
-REFERENCES runalyze.runalyze_type(id)
-)
-
-CREATE TABLE trainingplaner.Week
-(
-ID int(10) unsigned NOT NULL AUTO_INCREMENT,
-Plan int(10) unsigned NOT NULL,
-WeekNumber int(10) unsigned NOT NULL,
-Annotation varchar(255),
-PRIMARY KEY (ID),
-CONSTRAINT fk_Plan FOREIGN KEY (Plan)
-REFERENCES trainingplaner.Plan(id)
-)
-
-CREATE TABLE trainingplaner.Plan
-(
-ID int(10) unsigned NOT NULL AUTO_INCREMENT,
-Title varchar(255) NOT NULL UNIQUE,
-PRIMARY KEY (ID)
-)
-
-*/
-class PlanerDAL
-{
-	private static $db_con_isopened = false;
-	private static $db_con;
-	private static $numberOfDbCalls = 0;			//Anzahl an Anfragen an die DB
-	
-	
-	private static function GetDbConnection()
-	{
-		self::$numberOfDbCalls++;
-		if(self::$db_con_isopened == false)
-		{
-			self::$db_con = new mysqli(CredentialsProvider::$tphost, CredentialsProvider::$tpusername, CredentialsProvider::$tppassword, CredentialsProvider::$tpdb);
-			if (self::$db_con->connect_error) 
-			{
-				die("Connection failed: " . self::$db_con->connect_error);
-				self::$db_con_isopened = false;
-			} 
-			else
-			{
-				self::$db_con_isopened = true;
-			}
-		}
-		
-		return self::$db_con;
-	}
-	
-	private static function CloseDbConnection()
-	{
-		self::$numberOfDbCalls--;
-		if(self::$numberOfDbCalls == 0)
-		{
-			self::$db_con->close();	
-			self::$db_con_isopened = false;
-		}
-	}
-	
+class PlanerDAL extends DAL
+{	
 	public static function GetPlans()
 	{
 		$retVal = array();
@@ -414,14 +336,14 @@ class PlanerDAL
 			{
 				$id = intval($row["id"]);
 				$day = intval($row["Day"]);
-				$sport = RunalyzeDAL::GetSportNameById(intval($row["Sport"]));
-				$type = RunalyzeDAL::GetSportTypeNameById(intval($row["Type"]));
+				$sport = SportDAL::GetSportNameById(intval($row["Sport"]));
+				$type = SportDAL::GetSportTypeNameById(intval($row["Type"]));
 				$annotation = $row["Annotation"];
 				$durationHours = intval($row["DurationHours"]);
 				$durationMinutes = intval($row["DurationMinutes"]);
 				$planedDone = boolval($row["PlanedDone"]);
 				$avgHR = intval($row["AvgHR"]);
-				$sportAndType = RunalyzeDAL::GetSportAndType(intval($row["Sport"]), intval($row["Type"]));
+				$sportAndType = SportDAL::GetSportAndType(intval($row["Sport"]), intval($row["Type"]));
 				
 				$retVal = new Training($id, $day, $annotation, $durationHours, $durationMinutes, $sportAndType, $planedDone, $avgHR);
 			}
@@ -451,7 +373,7 @@ class PlanerDAL
 		$retVal;
 		if ($conn->query($sql) === TRUE) 
 		{
-			$sportAndType = RunalyzeDAL::GetSportAndType($sport, $type);
+			$sportAndType = SportDAL::GetSportAndType($sport, $type);
 			$retVal = new Training($conn->insert_id, $day, $annotation, $durationHours, $durationMinutes, $sportAndType, $planedDone, $avgHR);
 		} 
 		else 

@@ -1,8 +1,5 @@
 <?php
 
-include_once 'planer_dal.php';
-include_once 'runalyze_dal.php';
-
 class Training implements JsonSerializable 
 {
 	public $ID;
@@ -135,6 +132,36 @@ class Type implements JsonSerializable
 		[
 			'id' => $this->ID,
             'type' => utf8_encode($this->Type)
+        ];
+    }
+}
+
+class UserData implements JsonSerializable
+{
+	public $UserID;
+	public $Weight;
+	public $HrRest;
+	public $HrMax;
+	public $CreationDate;
+    
+	public function __construct($userid, $weight, $hrRest, $hrMax, $creationdate) 
+	{
+		$this->UserID = $userid;
+		$this->Weight = $weight;
+		$this->HrRest = $hrRest;
+		$this->HrMax = $hrMax;
+		$this->CreationDate = $creationdate;
+	}
+	
+	public function jsonSerialize() 
+	{
+        return 
+		[
+			'userid' => $this->UserID,
+			'weight' => $this->Weight,
+            'hrrest' => $this->HrRest,
+			'hrmax' => $this->HrMax,
+			'creationdate' => $this->CreationDate
         ];
     }
 }
