@@ -16,10 +16,30 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 
 	$scope.weekTitle = '';
 	$scope.planTitle = '';
-	
+
 	//initiale Daten laden
-	$scope.init = function () 
+	$scope.init = function (username) 
 	{
+		console.log(username);
+		
+		var request = $http({
+			method: "post",
+			url: requestUrl,
+			data: {
+				action: 'GetUserData',
+				obj: JSON.parse('{"username" : "'+username+'"}')
+			}
+		});
+		request.success(function (response) {
+			console.log(JSON.stringify(response));
+			$scope.userdata = response;
+			$scope.userweight = $scope.userdata.weight;
+			$scope.userhrmax = $scope.userdata.hrmax;
+			$scope.userhrrest = $scope.userdata.hrrest;
+		}).error(function(response) {
+			alert("error");
+		});
+		
 		var request = $http({
 			method: "post",
 			url: requestUrl,
@@ -57,10 +77,32 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 		});
 	};
 	
-	$scope.init();
 	$scope.range = function(n) {
         return new Array(n);
     };
+  
+	$scope.insertUserData = function() {
+		console.log(JSON.parse('{"userid" : '+$scope.userdata.userid+', "weight" : '+$scope.userweight+', "hrmax" : '+$scope.userhrmax+', "hrrest" : '+$scope.userhrrest+'}'));
+		
+		var request = $http({
+			method: "post",
+			url: requestUrl,
+			data: {
+				action: 'InsertUserData',
+				obj: JSON.parse('{"userid" : '+$scope.userdata.userid+', "weight" : '+$scope.userweight+', "hrmax" : '+$scope.userhrmax+', "hrrest" : '+$scope.userhrrest+'}')
+			}
+		});
+		request.success(function (response) {
+			$scope.userdata = response;
+		}).		error(function(response) {
+			alert("error");
+		});
+		
+		$('#new-userdata-popover').popover('hide');
+		$scope.userweight = $scope.userdata.weight;
+		$scope.userhrmax = $scope.userdata.hrmax;
+		$scope.userhrrest = $scope.userdata.hrrest;
+  };
   
   $scope.getPlan = function(plan) {
 		var request = $http({
@@ -146,13 +188,13 @@ app.controller('Ctrl', function($scope, $filter, $http) {
   };
 
   $scope.addTraining = function(week, day, planedDone) {
-	  console.log(JSON.parse('{"week" : '+week.id+', "day" : '+day+', "sport" : 6, "type" : 9, "annotation" : "", "durationhours" : 0, "durationminutes" : 0, "planeddone"  : '+planedDone+', "avghr" : 0}'));
+	  console.log(JSON.parse('{"week" : '+week.id+', "day" : '+day+', "sport" : 1, "type" : 1, "annotation" : "", "durationhours" : 0, "durationminutes" : 0, "planeddone"  : '+planedDone+', "avghr" : 0}'));
 	 var request = $http({
 			method: "post",
 			url: requestUrl,
 			data: {
 				action: 'AddTraining',
-				obj: JSON.parse('{"week" : '+week.id+', "day" : '+day+', "sport" : 6, "type" : 9, "annotation" : "", "durationhours" : 0, "durationminutes" : 0, "planeddone"  : '+planedDone+', "avghr" : 0}')
+				obj: JSON.parse('{"week" : '+week.id+', "day" : '+day+', "sport" : 1, "type" : 1, "annotation" : "", "durationhours" : 0, "durationminutes" : 0, "planeddone"  : '+planedDone+', "avghr" : 0}')
 			}
 		});
 		request.success(function (response) {
@@ -167,6 +209,11 @@ app.controller('Ctrl', function($scope, $filter, $http) {
   
   $scope.editTraining = function(week, training, data) {
 	  angular.extend(data, {id: training.id});
+	  if(data.avghr === undefined)
+	  {
+		  angular.extend(data, {avghr: 0});
+	  }
+	  
 	  console.log(data);
 	 var request = $http({
 			method: "post",
@@ -311,7 +358,7 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 			mins += week.trainings[i].durationhours * 60 + week.trainings[i].durationminutes;
 			doneTotal += week.trainings[i].durationhours * 60 + week.trainings[i].durationminutes;
 
-			trimp += (week.trainings[i].durationminutes + week.trainings[i].durationhours * 60) * (week.trainings[i].avghr - 45)/(192 - 45) * 0.64 * Math.pow(Math.E, (1.92 * (week.trainings[i].avghr - 45)/(192 - 45)));
+			trimp += (week.trainings[i].durationminutes + week.trainings[i].durationhours * 60) * (week.trainings[i].avghr - $scope.userdata.hrrest)/($scope.userdata.hrmax - $scope.userdata.hrrest) * 0.64 * Math.pow(Math.E, (1.92 * (week.trainings[i].avghr - $scope.userdata.hrrest)/($scope.userdata.hrmax - $scope.userdata.hrrest)));
 			
 			doneVolumeMap.set(week.trainings[i].sportandtype.sport, mins);
 		}
@@ -357,6 +404,10 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 		else if(attrs.id=="new-week-popover"){
 			var content = $("#popover-content-week").html();
 			var title = $("#popover-head-week").html();
+		}
+		else if(attrs.id=="new-userdata-popover"){
+			var content = $("#popover-content-userdata").html();
+			var title = $("#popover-head-userdata").html();
 		}
         
         var compileContent = $compile(content)(scope);

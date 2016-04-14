@@ -1,6 +1,7 @@
 <?php  
 	include_once 'planer_dal.php';
-	include_once 'runalyze_dal.php';
+	include_once 'user_dal.php';
+	include_once 'sport_dal.php';
 	include_once 'models.php';
 	
 	if(isset($_POST) and $_SERVER['REQUEST_METHOD'] == "POST")
@@ -15,19 +16,31 @@
 		
 		switch ($action) 
 		{
+			case "GetUserData":
+				if(isset($obj->username))
+				{
+					print_r(json_encode(UserDAL::GetUserData($obj->username)));
+				}
+				break;
+			case "InsertUserData":
+				if(isset($obj->userid) && isset($obj->weight) && isset($obj->hrmax) && isset($obj->hrrest) && ctype_digit((string)$obj->userid) && is_numeric($obj->weight) && ctype_digit((string)$obj->hrmax) && ctype_digit((string)$obj->hrrest))
+				{
+					print_r(json_encode(UserDAL::InsertUserData($obj->userid, $obj->weight, $obj->hrmax, $obj->hrrest)));
+				}
+				break;
 			case "GetSportsAndTypes":
-				print_r(json_encode(RunalyzeDAL::GetSportsAndTypes()));
+				print_r(json_encode(SportDAL::GetSportsAndTypes()));
 				break;
 			case "GetSportNameById":
 				if(isset($obj->id))
 				{
-					print_r(json_encode(RunalyzeDAL::GetSportNameById(intval($obj->id))));
+					print_r(json_encode(SportDAL::GetSportNameById(intval($obj->id))));
 				}
 				break;
 			case "GetSportTypeNameById":
 				if(isset($obj->id))
 				{
-					print_r(RunalyzeDAL::GetSportTypeNameById(intval($obj->id)));
+					print_r(SportDAL::GetSportTypeNameById(intval($obj->id)));
 				}
 				break;
 			case "CreatePlan":
@@ -94,7 +107,7 @@
 				}
 				break;
 			case "AddTraining":
-				if(isset($obj->week) && isset($obj->day) && isset($obj->sport) && isset($obj->type) && isset($obj->annotation) && isset($obj->durationhours) && isset($obj->durationminutes) && isset($obj->planeddone) && isset($obj->planeddone) && isset($obj->avghr))
+				if(isset($obj->week) && isset($obj->day) && isset($obj->sport) && isset($obj->type) && isset($obj->annotation) && isset($obj->durationhours) && isset($obj->durationminutes) && isset($obj->planeddone) && isset($obj->avghr))
 				{
 					print_r(json_encode(PlanerDAL::AddTraining($obj->week, $obj->day, $obj->sport, $obj->type, $obj->annotation, $obj->durationhours, $obj->durationminutes, $obj->planeddone, $obj->avghr)));
 				}

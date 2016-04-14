@@ -23,19 +23,50 @@
 
 <body>
 <?php  
-	include_once 'runalyze_dal.php';
+	include_once 'user_dal.php';
 	$pw = $_GET['pw'];
-	if(RunalyzeDAL::CheckPw($pw) != 1)
+	$username = $_GET['user'];
+	if(!UserDAL::CheckCredentials($username, $pw))
 	{
 		echo 'WRONG PW';
 		exit(1);
 	}
 ?>
 
-<div ng-controller="Ctrl" id="main">
+<div ng-controller="Ctrl" ng-init="init('<?php echo $_GET['user'] ?>')" id="main">
+<div id="user">
+	<h3>Benutzerdaten</h3>
+	<dl class="inline">
+		<dt>Gewicht</dt><dd>{{ userdata.weight || '' }}</dd>
+		<dt>Maximaler Puls</dt><dd>{{ userdata.hrmax || '' }}</dd>
+		<dt>Ruhepuls</dt><dd>{{ userdata.hrrest || '' }}</dd>
+	</dl>
+	<a data-container="body" data-toggle="popover" data-placement="right" id="new-userdata-popover" popover><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+			<div id="popover-head-userdata" class="hide">Benutzerdaten</div>
+			<div id="popover-content-userdata" class="hide"> 
+				<table>
+				<tr>
+					<td>Gewicht</td>
+					<td><input type="text" name="userweight" ng-model="userweight" size="30" /></td>
+				</tr>
+				<tr>
+					<td>Maximaler Puls</td>
+					<td><input type="text" name="userhrmax" ng-model="userhrmax" size="30" /></td>
+				</tr>
+				<tr>
+					<td>Ruhepuls</td>
+					<td><input type="text" name="userhrrest" ng-model="userhrrest" size="30" /></td>
+				</tr>
+				<tr>
+					<td><button ng-click="insertUserData()" class="btn btn-primary" id="close-popover" data-toggle="clickover"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button></td>
+				</tr>
+				</table>
+			</div>
+	</a>
+</div>
 <div id="plans">
 	<div class="btn-group" role="group" aria-label="...">
-	  <button  ng-repeat="p in plans" ng-click="getPlan(p)" onClick="window.location.href='index.php<?php echo "?pw=".$pw ?>#plan'" type="button" class="btn btn-default">{{p.title}}</button>
+	  <button  ng-repeat="p in plans" ng-click="getPlan(p)" onClick="window.location.href='index.php<?php echo "?pw=".$pw."&user=".$username ?>#plan'" type="button" class="btn btn-default">{{p.title}}</button>
 	</div>
 	<a data-container="body" data-toggle="popover" data-placement="right" id="new-plan-popover" popover><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 			<div id="popover-head-plan" class="hide">Titel des Plans</div>
