@@ -34,35 +34,45 @@
 ?>
 
 <div ng-controller="Ctrl" ng-init="init('<?php echo $_GET['user'] ?>')" id="main">
-<div id="user">
-	<h3>Benutzerdaten</h3>
-	<dl class="inline">
-		<dt>Gewicht</dt><dd>{{ userdata.weight || '' }}</dd>
-		<dt>Maximaler Puls</dt><dd>{{ userdata.hrmax || '' }}</dd>
-		<dt>Ruhepuls</dt><dd>{{ userdata.hrrest || '' }}</dd>
-	</dl>
-	<a data-container="body" data-toggle="popover" data-placement="right" id="new-userdata-popover" popover><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-			<div id="popover-head-userdata" class="hide">Benutzerdaten</div>
-			<div id="popover-content-userdata" class="hide"> 
-				<table>
-				<tr>
-					<td>Gewicht</td>
-					<td><input type="text" name="userweight" ng-model="userweight" size="30" /></td>
-				</tr>
-				<tr>
-					<td>Maximaler Puls</td>
-					<td><input type="text" name="userhrmax" ng-model="userhrmax" size="30" /></td>
-				</tr>
-				<tr>
-					<td>Ruhepuls</td>
-					<td><input type="text" name="userhrrest" ng-model="userhrrest" size="30" /></td>
-				</tr>
-				<tr>
-					<td><button ng-click="insertUserData()" class="btn btn-primary" id="close-popover" data-toggle="clickover"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button></td>
-				</tr>
-				</table>
-			</div>
-	</a>
+<div id="info">
+	<div id="user">
+		<h3>Benutzerdaten</h3>
+		<dl class="inline">
+			<dt>Gewicht</dt><dd>{{ userdata.weight || '' }}</dd>
+			<dt>Maximaler Puls</dt><dd>{{ userdata.hrmax || '' }}</dd>
+			<dt>Ruhepuls</dt><dd>{{ userdata.hrrest || '' }}</dd>
+		</dl>
+		<a data-container="body" data-toggle="popover" data-placement="right" id="new-userdata-popover" popover><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+				<div id="popover-head-userdata" class="hide">Benutzerdaten</div>
+				<div id="popover-content-userdata" class="hide"> 
+					<table>
+					<tr>
+						<td>Gewicht</td>
+						<td><input type="text" name="userweight" ng-model="userweight" size="30" /></td>
+					</tr>
+					<tr>
+						<td>Maximaler Puls</td>
+						<td><input type="text" name="userhrmax" ng-model="userhrmax" size="30" /></td>
+					</tr>
+					<tr>
+						<td>Ruhepuls</td>
+						<td><input type="text" name="userhrrest" ng-model="userhrrest" size="30" /></td>
+					</tr>
+					<tr>
+						<td><button ng-click="insertUserData()" class="btn btn-primary" id="close-popover" data-toggle="clickover"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button></td>
+					</tr>
+					</table>
+				</div>
+		</a>
+	</div>
+	<div id="calculations">
+		<h3>Trainingswerte der letzten 7 Tage</h3>
+		<dl class="inline">
+			<dt>Monotonie</dt><dd>{{ monotony || '' }}</dd>
+			<dt>Trainingsbelastung</dt><dd>{{ strain || '' }}</dd>
+		</dl>
+	</div>
+	<div id="infofix"></div>
 </div>
 <div id="plans">
 	<div class="btn-group" role="group" aria-label="...">
