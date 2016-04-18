@@ -54,6 +54,7 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 			if(response.length > 0)
 			{
 				$scope.plan = response[0];
+				$scope.calcPerformance(response[0]);
 			}
 		}).
 		error(function(response) {
@@ -392,6 +393,101 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 	retVal += '<dt class="sum">Trimp</dt><dd class="sum">' + trimp.toFixed(2) + '</dd></dl>';
 	
 	return retVal;
+  }
+  
+  $scope.calcPerformance = function(plan) {
+	var trimps = [];
+	var trimps_sum = 0;
+	var days = 7;
+	  
+	if(plan.weeks === undefined || plan.weeks.length == 0)
+	{
+		return;
+	}
+
+	var now = new Date().getDay();
+	if(now == 0)
+	{
+		now = 7;
+	}
+
+	var lastWeek = Math.max.apply(Math,plan.weeks.map(function(o){return o.weeknumber;}));
+	var lastTraining = Math.max.apply(Math,plan.weeks.filter(function(o){return o.weeknumber == lastWeek;} )[0].trainings.map(function(o){return o.day;}));
+
+	if(now < lastTraining)		//dann liegt now in der nächsten Woche
+	{
+		now += lastWeek * 7;
+	}
+	else
+	{
+		now += (lastWeek - 1) * 7;
+	}
+	  
+	console.log(lastWeek);
+	console.log(lastTraining);
+	console.log(now);
+	
+	//von jetzt an days Tage zurück
+	for(var i = 0; i < days; i++)
+	{
+		var weeks = plan.weeks.filter(function(o){return o.weeknumber == lastWeek;} );
+		if(weeks === undefined || weeks.length == 0)
+		{
+			trimps.push(0);
+		}
+		else
+		{
+			var week = weeks[0];
+			//alle trainings an dem tag
+			var res = week.trainings.filter(function(o){return (o.day + ((lastWeek - 1) * 7)) == (now - i) && (o.planeddone == true);} );
+			
+			if(res === undefined || res.length == 0)		//leere Trimps pushen
+			{
+				trimps.push(0);
+			}
+			else
+			{
+				var dayTrimp = 0;
+				for(var k = 0; k < res.length; k++)		//mehrere Trainings
+				{
+					dayTrimp += (res[k].durationminutes + res[k].durationhours * 60) * (res[k].avghr - $scope.userdata.hrrest)/($scope.userdata.hrmax - $scope.userdata.hrrest) * 0.64 * Math.pow(Math.E, (1.92 * (res[k].avghr - $scope.userdata.hrrest)/($scope.userdata.hrmax - $scope.userdata.hrrest)));
+				}
+				trimps.push(dayTrimp);
+			}
+		}
+		
+		if(now - i < 1)
+		{
+			lastWeek--;
+		}
+	}
+
+
+	for(var i = 0; i < days; i++)
+	{
+		trimps_sum += trimps[i];
+	}
+		  
+	  
+	var avg = trimps_sum / days;
+	console.log('avg:'+avg);
+	var variance = 0;
+	
+	for (var i = 0; i < days; i++)
+	{
+		variance += Math.pow(trimps[i] - avg, 2);
+	}
+	
+	variance /= days;
+	console.log(variance);
+	$scope.monotony = 10;
+	
+	if(variance != 0)
+	{
+		$scope.monotony = (avg/Math.sqrt(variance)).toFixed(2);
+	}
+	
+	$scope.strain = (trimps_sum * $scope.monotony).toFixed(2);
   }
   
 }).directive('popover', function($compile) {
