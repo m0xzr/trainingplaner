@@ -239,6 +239,10 @@ app.controller('Ctrl', function($scope, $filter, $http) {
   };
   
   $scope.removeTraining = function(week, training) { 
+	/*if (confirm("Training wirklich löschen?") == false) {
+		return;
+	}*/
+  
 	var request = $http({
 		method: "post",
 		url: requestUrl,
@@ -256,6 +260,10 @@ app.controller('Ctrl', function($scope, $filter, $http) {
   };
   
   $scope.removePlan = function(plans, plan) { 
+	if (confirm("Plan wirklich löschen?") == false) {
+		return;
+	}   
+  
     var request = $http({
     	method: "post",
 		url: requestUrl,
@@ -287,7 +295,11 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 
   };
   
-  $scope.removeWeek = function(plan, week) { 
+  $scope.removeWeek = function(plan, week) {
+	if (confirm("Woche wirklich löschen?") == false) {
+		return;
+	} 
+  
     var request = $http({
 		method: "post",
 		url: requestUrl,
