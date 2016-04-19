@@ -16,6 +16,17 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 
 	$scope.weekTitle = '';
 	$scope.planTitle = '';
+	
+	$scope.$watch('plan', function(newVal, oldVal){
+		if(newVal === undefined)
+		{
+			return;
+		}
+		
+        $scope.calcPerformance(newVal);
+    }, true);
+	
+	
 
 	//initiale Daten laden
 	$scope.init = function (username) 
@@ -54,7 +65,7 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 			if(response.length > 0)
 			{
 				$scope.plan = response[0];
-				$scope.calcPerformance(response[0]);
+				//$scope.calcPerformance(response[0]);
 			}
 		}).
 		error(function(response) {
