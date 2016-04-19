@@ -423,9 +423,9 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 		now += (lastWeek - 1) * 7;
 	}
 	  
-	console.log(lastWeek);
-	console.log(lastTraining);
-	console.log(now);
+	console.log("lastWeek:"+lastWeek);
+	console.log("lastTraining:"+lastTraining);
+	console.log("now:"+now);
 	
 	//von jetzt an days Tage zurück
 	for(var i = 0; i < days; i++)
@@ -456,7 +456,7 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 			}
 		}
 		
-		if(now - i < 1)
+		if((now - i) % 7 == 1)
 		{
 			lastWeek--;
 		}
@@ -470,6 +470,8 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 		  
 	  
 	var avg = trimps_sum / days;
+	console.log('trimps:'+trimps);
+	console.log('trimps_sum:'+trimps_sum);
 	console.log('avg:'+avg);
 	var variance = 0;
 	
