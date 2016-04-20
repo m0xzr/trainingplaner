@@ -419,9 +419,21 @@ app.controller('Ctrl', function($scope, $filter, $http) {
   }
   
   $scope.calcPerformance = function(plan) {
-	var trimps = [];
 	var trimps_sum = 0;
-	var days = 7;
+	
+	//Anzahl der Berechnungstage
+	var MONOn = 7;
+	var ATLn = 7;
+	var CTLn = 42;
+	
+	var lambdaCTL = 2 / (CTLn + 1);
+	var lambdaATL = 2 / (ATLn + 1);
+	
+	//benötigte Arrays
+	var trimps = [];
+	var fatigue = [];
+	var fitness = [];
+	var performance = [];
 	  
 	if(plan.weeks === undefined || plan.weeks.length == 0)
 	{
@@ -451,7 +463,7 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 	console.log("now:"+now);
 	
 	//von jetzt an days Tage zurück
-	for(var i = 0; i < days; i++)
+	for(var i = 0; i < Math.max(MONOn, ATLn, CTLn); i++)
 	{
 		var weeks = plan.weeks.filter(function(o){return o.weeknumber == lastWeek;} );
 		if(weeks === undefined || weeks.length == 0)
@@ -483,27 +495,32 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 		{
 			lastWeek--;
 		}
+		
+		if(lastWeek == 0)
+		{
+			break;
+		}
 	}
 
-
-	for(var i = 0; i < days; i++)
+	//Monotonie und Strain
+	for(var i = 0; i < Math.min(MONOn, trimps.length); i++)
 	{
 		trimps_sum += trimps[i];
 	}
 		  
 	  
-	var avg = trimps_sum / days;
+	var avg = trimps_sum / Math.min(MONOn, trimps.length);
 	console.log('trimps:'+trimps);
 	console.log('trimps_sum:'+trimps_sum);
 	console.log('avg:'+avg);
 	var variance = 0;
 	
-	for (var i = 0; i < days; i++)
+	for (var i = 0; i < Math.min(MONOn, trimps.length); i++)
 	{
 		variance += Math.pow(trimps[i] - avg, 2);
 	}
 	
-	variance /= days;
+	variance /= Math.min(MONOn, trimps.length);
 	console.log(variance);
 	$scope.monotony = 10;
 	
@@ -513,6 +530,75 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 	}
 	
 	$scope.strain = (trimps_sum * $scope.monotony).toFixed(2);
+	
+	
+	//TSB, ATL und CTL
+	var CTLmax = 0;
+	var ATLmax = 0;
+	for (var i = 1; i <= trimps.length; i++) 
+	{
+		var lastFitness;
+		if(fitness[i - 1] === undefined)
+		{
+			lastFitness = 0;
+		}
+		else
+		{
+			lastFitness = fitness[i - 1];
+		}
+		var lastFatigue;
+		if(fatigue[i - 1] === undefined)
+		{
+			lastFatigue = 0;
+		}
+		else
+		{
+			lastFatigue = fatigue[i - 1];
+		}
+	
+		fitness[i] = trimps[trimps.length - i] * lambdaCTL + (1 - lambdaCTL) * lastFitness;
+		if(fitness[i] > CTLmax)
+		{
+			CTLmax = fitness[i];
+		}
+		fatigue[i] = trimps[trimps.length - i] * lambdaATL + (1 - lambdaATL) * lastFatigue;
+		if(fatigue[i] > ATLmax)
+		{
+			ATLmax = fatigue[i];
+		}
+		performance[i] = fitness[i] - fatigue[i];
+	}
+	
+	if(fitness[fitness.length - 1] === undefined)
+	{
+		$scope.CTL = 0;
+	}
+	else
+	{
+		$scope.CTL = (fitness[fitness.length - 1] / CTLmax).toFixed(2);
+	}
+	
+	if(fatigue[fatigue.length - 1] === undefined)
+	{
+		$scope.ATL = 0;
+	}
+	else
+	{
+		$scope.ATL = (fatigue[fatigue.length - 1] / ATLmax).toFixed(2);
+	}
+	
+	if(performance[performance.length - 1] === undefined)
+	{
+		$scope.TSB = 0;
+	}
+	else
+	{
+		$scope.TSB = performance[performance.length - 1].toFixed(2);
+	}
+	
+	console.log(fitness[fitness.length - 1] / CTLmax);
+	console.log(fatigue[fatigue.length - 1] / ATLmax);
+	console.log(performance[performance.length - 1]);	
   }
   
 }).directive('popover', function($compile) {
