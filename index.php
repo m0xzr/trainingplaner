@@ -70,6 +70,9 @@
 		<dl class="inline">
 			<dt>Monotonie</dt><dd>{{ monotony || '' }}</dd>
 			<dt>Trainingsbelastung</dt><dd>{{ strain || '' }}</dd>
+			<dt>Müdigkeit (ATL)</dt><dd>{{ ATL || '' }}</dd>
+			<dt>Fitnessgrad (CTL)</dt><dd>{{ CTL || '' }}</dd>
+			<dt>Stress Balance (TSB)</dt><dd>{{ TSB || '' }}</dd>
 		</dl>
 	</div>
 	<div id="infofix"></div>
