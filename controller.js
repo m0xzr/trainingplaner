@@ -446,8 +446,43 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 		now = 7;
 	}
 
-	var lastWeek = Math.max.apply(Math,plan.weeks.map(function(o){return o.weeknumber;}));
-	var lastTraining = Math.max.apply(Math,plan.weeks.filter(function(o){return o.weeknumber == lastWeek;} )[0].trainings.map(function(o){return o.day;}));
+	var lastWeek = -1;
+	for (const w of plan.weeks) 
+	{
+		var hasTraining = false;
+		for(const t of w.trainings)
+		{
+			if(t.planeddone)
+			{
+				hasTraining = true;
+			}
+		}
+		
+		if(hasTraining && w.weeknumber > lastWeek)
+		{
+			lastWeek = w.weeknumber;
+		}
+	}
+	
+	if(lastWeek == -1)
+	{
+		return;
+	}
+	
+	var lastTraining = -1;
+	for(const t of plan.weeks.filter(function(o){return o.weeknumber == lastWeek;})[0].trainings)
+	{
+		if(t.planeddone && t.day > lastTraining)
+		{
+			lastTraining = t.day;
+		}
+	}
+	
+	if(lastTraining == -1)
+	{
+		return;
+	}
+
 
 	if(now < lastTraining)		//dann liegt now in der nächsten Woche
 	{
@@ -596,9 +631,27 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 		$scope.TSB = performance[performance.length - 1].toFixed(2);
 	}
 	
-	console.log(fitness[fitness.length - 1] / CTLmax);
-	console.log(fatigue[fatigue.length - 1] / ATLmax);
-	console.log(performance[performance.length - 1]);	
+	var restDays = 0;
+	if($scope.ATL !== undefined)
+	{
+		if ($scope.CTL  === undefined) 
+		{
+			$scope.CTL = 1;
+		}
+		console.log("log"+Math.log((1 - lambdaATL) / (1 - lambdaCTL)));
+		console.log("log"+Math.log(($scope.CTL * CTLmax) / ($scope.ATL * ATLmax)));
+		restDays = Math.log(($scope.CTL * CTLmax) / ($scope.ATL * ATLmax)) / (Math.log((1 - lambdaATL) / (1 - lambdaCTL)));
+		if ($scope.CTL * CTLmax < 15) 	//Fallback für sehr niedrige CTLs
+		{
+			restDays = 4 + $scope.restDays / -5;
+		}
+	}
+	$scope.restDays = Math.max(0, restDays).toFixed(2);
+	
+	console.log($scope.CTL);
+	console.log($scope.ATL);
+	console.log($scope.TSB);
+	console.log($scope.restDays);	
   }
   
 }).directive('popover', function($compile) {
