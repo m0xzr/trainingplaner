@@ -447,20 +447,20 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 	}
 
 	var lastWeek = -1;
-	for (const w of plan.weeks) 
+	for (var i = 0; i < plan.weeks.length; i++) 
 	{
 		var hasTraining = false;
-		for(const t of w.trainings)
+		for(var j = 0; j < plan.weeks[i].trainings.length; j++)
 		{
-			if(t.planeddone)
+			if(plan.weeks[i].trainings[j].planeddone)
 			{
 				hasTraining = true;
 			}
 		}
 		
-		if(hasTraining && w.weeknumber > lastWeek)
+		if(hasTraining && plan.weeks[i].weeknumber > lastWeek)
 		{
-			lastWeek = w.weeknumber;
+			lastWeek = plan.weeks[i].weeknumber;
 		}
 	}
 	
@@ -470,11 +470,12 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 	}
 	
 	var lastTraining = -1;
-	for(const t of plan.weeks.filter(function(o){return o.weeknumber == lastWeek;})[0].trainings)
+	var trains = plan.weeks.filter(function(o){return o.weeknumber == lastWeek;})[0].trainings
+	for(var i = 0; i < trains.length; i++)
 	{
-		if(t.planeddone && t.day > lastTraining)
+		if(trains[i].planeddone && trains[i].day > lastTraining)
 		{
-			lastTraining = t.day;
+			lastTraining = trains[i].day;
 		}
 	}
 	
