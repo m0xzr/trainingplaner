@@ -75,13 +75,24 @@ dt:after
 {
 	float: left;
 	padding-right: 30px;
+	width: 25%;
 }
 
 #calculations
 {
 	float: left;
 	padding-left: 30px;
+	padding-right: 30px;
 	border-left: 1px solid black;
+	width: 25%;
+}
+
+#chart
+{
+	float: left;
+	padding-left: 30px;
+	border-left: 1px solid black;
+	width: 50%;
 }
 
 #infofix
