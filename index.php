@@ -11,10 +11,11 @@
 <link rel="stylesheet" href="css/trainingplaner.css">
 <script type="text/javascript" src="js/angular.min.js"></script>
 <script type="text/javascript" src="js/angular-sanitize.min.js"></script>
+<script src='js/d3.min.js' type='text/javascript'></script>
+<script src='js/angular-charts.min.js' type='text/javascript'></script>
 <script type="text/javascript" src="js/xeditable.min.js"></script>
 <script type='text/javascript' src="js/jquery-1.12.1.min.js"></script>
 <script type='text/javascript' src="bootstrap/js/bootstrap.min.js"></script>
-
 <script src="controller.js"></script>
 <style type="text/css">
 
@@ -70,12 +71,14 @@
 		<dl class="inline">
 			<dt>Monotonie</dt><dd>{{ monotony || '' }}</dd>
 			<dt>Trainingsbelastung</dt><dd>{{ strain || '' }}</dd>
-			<dt>Müdigkeit (ATL)</dt><dd>{{ ATL || '' }}%</dd>
-			<dt>Fitnessgrad (CTL)</dt><dd>{{ CTL || '' }}%</dd>
+			<dt>Müdigkeit (ATL)</dt><dd>{{ ATL || '' }}</dd>
+			<dt>Fitnessgrad (CTL)</dt><dd>{{ CTL || '' }}</dd>
 			<dt>Stress Balance (TSB)</dt><dd>{{ TSB || '' }}</dd>
 			<dt>Ruhetage</dt><dd>{{ restDays || '' }}</dd>
 		</dl>
 	</div>
+	<div id="chart" ac-data="lastDays" ac-chart="'bar'" ac-config="chartCfg">
+    </div>
 	<div id="infofix"></div>
 </div>
 <div id="plans">

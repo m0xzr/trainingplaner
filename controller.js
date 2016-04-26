@@ -1,4 +1,4 @@
-var app = angular.module("app", ["xeditable", "ngSanitize"]);
+var app = angular.module("app", ["xeditable", "ngSanitize", "angularCharts"]);
 
 app.run(function(editableOptions) {
   editableOptions.theme = 'bs3';
@@ -488,6 +488,7 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 	if(now < lastTraining)		//dann liegt now in der nächsten Woche
 	{
 		now += lastWeek * 7;
+		lastWeek++;
 	}
 	else
 	{
@@ -510,8 +511,7 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 		{
 			var week = weeks[0];
 			//alle trainings an dem tag
-			var res = week.trainings.filter(function(o){return (o.day + ((lastWeek - 1) * 7)) == (now - i) && (o.planeddone == true);} );
-			
+			var res = week.trainings.filter(function(o){return ((o.day + ((lastWeek - 1) * 7)) == (now - i)) && (o.planeddone == true);} );
 			if(res === undefined || res.length == 0)		//leere Trimps pushen
 			{
 				trimps.push(0);
@@ -569,8 +569,8 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 	
 	
 	//TSB, ATL und CTL
-	var CTLmax = 0;
-	var ATLmax = 0;
+	//var CTLmax = 0;
+	//var ATLmax = 0;
 	for (var i = 1; i <= trimps.length; i++) 
 	{
 		var lastFitness;
@@ -593,15 +593,15 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 		}
 	
 		fitness[i] = trimps[trimps.length - i] * lambdaCTL + (1 - lambdaCTL) * lastFitness;
-		if(fitness[i] > CTLmax)
+		/*if(fitness[i] > CTLmax)
 		{
 			CTLmax = fitness[i];
-		}
+		}*/
 		fatigue[i] = trimps[trimps.length - i] * lambdaATL + (1 - lambdaATL) * lastFatigue;
-		if(fatigue[i] > ATLmax)
+		/*if(fatigue[i] > ATLmax)
 		{
 			ATLmax = fatigue[i];
-		}
+		}*/
 		performance[i] = fitness[i] - fatigue[i];
 	}
 	
@@ -611,7 +611,8 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 	}
 	else
 	{
-		$scope.CTL = (fitness[fitness.length - 1] / CTLmax).toFixed(2);
+		//$scope.CTL = (fitness[fitness.length - 1] / CTLmax).toFixed(2);
+		$scope.CTL = fitness[fitness.length - 1].toFixed(2);
 	}
 	
 	if(fatigue[fatigue.length - 1] === undefined)
@@ -620,7 +621,8 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 	}
 	else
 	{
-		$scope.ATL = (fatigue[fatigue.length - 1] / ATLmax).toFixed(2);
+		//$scope.ATL = (fatigue[fatigue.length - 1] / ATLmax).toFixed(2);
+		$scope.ATL = fatigue[fatigue.length - 1].toFixed(2);
 	}
 	
 	if(performance[performance.length - 1] === undefined)
@@ -640,9 +642,11 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 			$scope.CTL = 1;
 		}
 		console.log("log"+Math.log((1 - lambdaATL) / (1 - lambdaCTL)));
-		console.log("log"+Math.log(($scope.CTL * CTLmax) / ($scope.ATL * ATLmax)));
-		restDays = Math.log(($scope.CTL * CTLmax) / ($scope.ATL * ATLmax)) / (Math.log((1 - lambdaATL) / (1 - lambdaCTL)));
-		if ($scope.CTL * CTLmax < 15) 	//Fallback für sehr niedrige CTLs
+		//console.log("log"+Math.log(($scope.CTL * CTLmax) / ($scope.ATL * ATLmax)));
+		//restDays = Math.log(($scope.CTL * CTLmax) / ($scope.ATL * ATLmax)) / (Math.log((1 - lambdaATL) / (1 - lambdaCTL)));
+		restDays = Math.log($scope.CTL / $scope.ATL) / (Math.log((1 - lambdaATL) / (1 - lambdaCTL)));
+		//if ($scope.CTL * CTLmax < 15) 	//Fallback für sehr niedrige CTLs
+		if ($scope.CTL < 15) 	//Fallback für sehr niedrige CTLs
 		{
 			restDays = 4 + $scope.restDays / -5;
 		}
@@ -652,8 +656,77 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 	console.log($scope.CTL);
 	console.log($scope.ATL);
 	console.log($scope.TSB);
-	console.log($scope.restDays);	
+	console.log($scope.restDays);
+
+	$scope.createChartData(trimps);
   }
+  
+  $scope.createChartData = function(trimps) {
+	  var now = new Date().getDay() + 1;		//Wochentag vor einer Woche
+	  var dataObjs = [];
+	  for(var i = Math.min(trimps.length, 6); i >= 0; i--)
+	  {
+		var label = $scope.getDay(now);
+		  
+		var dataObj = {
+			  x: label,
+			  y: [trimps[i]],
+		};
+		dataObjs.push(dataObj);
+		
+		now++;
+		if(now == 8)		//Woche zu Ende -> von vorne
+		{
+			now = 1;
+		}
+	  }
+	  
+	  $scope.lastDays = {
+		series: ['Trimp'],
+		data: dataObjs
+	};
+	
+	console.log($scope.lastDays);
+  }
+  
+  $scope.getDay = function(index) {
+	  switch(index)
+	  {
+		case 1:
+			return 'Mo';
+		case 2:
+			return 'Di';
+		case 3:
+			return 'Mi';
+		case 4:
+			return 'Do';
+		case 5:
+			return 'Fr';
+		case 6:
+			return 'Sa';
+		case 7:
+			return 'So';
+		default:
+			return '';
+	  }
+  }
+
+	$scope.chartCfg = {
+		labels: false,
+		title: "Trimps der letzten 7 Tage",
+		legend: {
+			display: false,
+			position: 'left'
+		},
+		colors: [{
+			fillColor: 'rgba(47, 132, 71, 0.8)',
+			strokeColor: 'rgba(47, 132, 71, 0.8)',
+			highlightFill: 'rgba(47, 132, 71, 0.8)',
+			highlightStroke: 'rgba(47, 132, 71, 0.8)'
+		}],
+		isAnimate: false,
+		innerRadius: 0
+	};
   
 }).directive('popover', function($compile) {
     return {
