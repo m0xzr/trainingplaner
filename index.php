@@ -77,8 +77,7 @@
 			<dt>Ruhetage</dt><dd>{{ restDays || '' }}</dd>
 		</dl>
 	</div>
-	<div id="chart">
-        <canvas id="chart-area"></canvas>
+	<div id="chart" ac-data="lastDays" ac-chart="'bar'" ac-config="chartCfg">
     </div>
 	<div id="infofix"></div>
 </div>

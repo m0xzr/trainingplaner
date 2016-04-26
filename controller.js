@@ -488,6 +488,7 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 	if(now < lastTraining)		//dann liegt now in der nächsten Woche
 	{
 		now += lastWeek * 7;
+		lastWeek++;
 	}
 	else
 	{
@@ -526,7 +527,7 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 			}
 		}
 		
-		if((now - i) % 7 == 1 && (now - i) <= lastTraining * lastWeek)
+		if((now - i) % 7 == 1)
 		{
 			lastWeek--;
 		}
@@ -655,8 +656,77 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 	console.log($scope.CTL);
 	console.log($scope.ATL);
 	console.log($scope.TSB);
-	console.log($scope.restDays);	
+	console.log($scope.restDays);
+
+	$scope.createChartData(trimps);
   }
+  
+  $scope.createChartData = function(trimps) {
+	  var now = new Date().getDay() + 1;		//Wochentag vor einer Woche
+	  var dataObjs = [];
+	  for(var i = Math.min(trimps.length, 6); i >= 0; i--)
+	  {
+		var label = $scope.getDay(now);
+		  
+		var dataObj = {
+			  x: label,
+			  y: [trimps[i]],
+		};
+		dataObjs.push(dataObj);
+		
+		now++;
+		if(now == 8)		//Woche zu Ende -> von vorne
+		{
+			now = 1;
+		}
+	  }
+	  
+	  $scope.lastDays = {
+		series: ['Trimp'],
+		data: dataObjs
+	};
+	
+	console.log($scope.lastDays);
+  }
+  
+  $scope.getDay = function(index) {
+	  switch(index)
+	  {
+		case 1:
+			return 'Mo';
+		case 2:
+			return 'Di';
+		case 3:
+			return 'Mi';
+		case 4:
+			return 'Do';
+		case 5:
+			return 'Fr';
+		case 6:
+			return 'Sa';
+		case 7:
+			return 'So';
+		default:
+			return '';
+	  }
+  }
+
+	$scope.chartCfg = {
+		labels: false,
+		title: "Trimps der letzten 7 Tage",
+		legend: {
+			display: false,
+			position: 'left'
+		},
+		colors: [{
+			fillColor: 'rgba(47, 132, 71, 0.8)',
+			strokeColor: 'rgba(47, 132, 71, 0.8)',
+			highlightFill: 'rgba(47, 132, 71, 0.8)',
+			highlightStroke: 'rgba(47, 132, 71, 0.8)'
+		}],
+		isAnimate: false,
+		innerRadius: 0
+	};
   
 }).directive('popover', function($compile) {
     return {

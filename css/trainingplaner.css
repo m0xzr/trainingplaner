@@ -95,6 +95,11 @@ dt:after
 	width: 50%;
 }
 
+[ac-chart] 
+{
+	height: 200px;
+}
+
 #infofix
 {
 	clear: both;
