@@ -662,31 +662,93 @@ app.controller('Ctrl', function($scope, $filter, $http) {
   }
   
   $scope.createChartData = function(trimps) {
-	  var now = new Date().getDay() + 1;		//Wochentag vor einer Woche
-	  var dataObjs = [];
-	  for(var i = Math.min(trimps.length, 6); i >= 0; i--)
+	  var now = new Date().getDay();		//heute
+	  var week = 0;
+	  var dataDays = [];
+	  var dataWeeks = [];
+	  var sumWeekTrimp = 0;
+	  for(var i = 0; i < trimps.length; i++)
 	  {
-		var label = $scope.getDay(now);
-		  
-		var dataObj = {
-			  x: label,
-			  y: [trimps[i]],
-		};
-		dataObjs.push(dataObj);
-		
-		now++;
-		if(now == 8)		//Woche zu Ende -> von vorne
+		if(i < 7)
 		{
-			now = 1;
+			var labelDay = $scope.getDay(now);
+			  
+			var dataDay = {
+				  x: labelDay,
+				  y: [trimps[i]],
+			};
+			dataDays.push(dataDay);
+		}
+		
+		//Wochen Trimp aufsummieren
+		sumWeekTrimp += trimps[i];
+		
+		now--;
+		if(now == 0)		//Woche zu Ende -> von vorne
+		{
+			//Wochendaten setzen
+			var dataWeek = {
+				  x: $scope.getWeekName(week),
+				  y: [sumWeekTrimp],
+			};
+			dataWeeks.push(dataWeek);
+			
+			//Werte zurücksetzen
+			sumWeekTrimp = 0;
+			
+			now = 7;
+			week--;
+			
+		}
+		
+		if(week == -4)
+		{
+			break;
 		}
 	  }
 	  
+	  dataDays.reverse();
+	  dataWeeks.reverse();
+	  
 	  $scope.lastDays = {
 		series: ['Trimp'],
-		data: dataObjs
+		data: dataDays
 	};
 	
+	$scope.lastWeeks = {
+		series: ['Trimp'],
+		data: dataWeeks
+	};
+	
+	//initiale Werte setzen
+	$scope.chartData = $scope.lastDays;
+	
 	console.log($scope.lastDays);
+	console.log($scope.lastWeeks);
+  }
+  
+  $scope.showLastDays = function() {
+	$scope.chartData = $scope.lastDays;
+  };
+  
+  $scope.showLastWeekss = function() {
+	$scope.chartData = $scope.lastWeeks;
+  };
+  
+  $scope.getWeekName = function(index){
+	  switch(index)
+	  {
+		case 0:
+			return 'Diese';
+		case -1:
+			return 'Letzte';
+		case -2:
+			return 'Vorletzte';
+		case -3:
+			return 'Vorvorletzte';
+		default:
+			return '';
+	  }
   }
   
   $scope.getDay = function(index) {
@@ -713,7 +775,7 @@ app.controller('Ctrl', function($scope, $filter, $http) {
 
 	$scope.chartCfg = {
 		labels: false,
-		title: "Trimps der letzten 7 Tage",
+		title: '',
 		legend: {
 			display: false,
 			position: 'left'

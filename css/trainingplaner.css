@@ -76,6 +76,7 @@ dt:after
 	float: left;
 	padding-right: 30px;
 	width: 25%;
+	height: 300px;
 }
 
 #calculations
@@ -85,19 +86,25 @@ dt:after
 	padding-right: 30px;
 	border-left: 1px solid black;
 	width: 25%;
+	height: 300px;
 }
 
-#chart
+#chart_container
 {
 	float: left;
 	padding-left: 30px;
 	border-left: 1px solid black;
 	width: 50%;
+	height: 300px;
+}
+
+#chart
+{
 }
 
 [ac-chart] 
 {
-	height: 200px;
+	height: 280px;
 }
 
 #infofix
