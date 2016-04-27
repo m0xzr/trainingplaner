@@ -77,8 +77,11 @@
 			<dt>Ruhetage</dt><dd>{{ restDays || '' }}</dd>
 		</dl>
 	</div>
-	<div id="chart" ac-data="lastDays" ac-chart="'bar'" ac-config="chartCfg">
-    </div>
+	<div id="chart_container">
+		<input type="radio" name="chart" value="daysChart" checked="checked" ng-model="value" ng-change='showLastDays()' />Trimps der letzten Tage<input type="radio" name="chart" value="weeksChart" ng-model="value" ng-change='showLastWeekss()' style="margin-left: 20px;" />Trimps der letzten Wochen
+		<div id="chart" ac-data="chartData" ac-chart="'bar'" ac-config="chartCfg">
+		</div>
+	</div>
 	<div id="infofix"></div>
 </div>
 <div id="plans">
