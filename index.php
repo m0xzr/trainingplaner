@@ -9,6 +9,7 @@
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="css/xeditable.css">
 <link rel="stylesheet" href="css/trainingplaner.css">
+<script type="text/javascript" src="Calculator_es5.js"></script>
 <script type="text/javascript" src="js/angular.min.js"></script>
 <script type="text/javascript" src="js/angular-sanitize.min.js"></script>
 <script src='js/d3.min.js' type='text/javascript'></script>
