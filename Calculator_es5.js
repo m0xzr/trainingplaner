@@ -33,9 +33,6 @@ var Calculator = function () {
 			Calculator.LastWeek = -1;
 			Calculator.LastTraining = -1;
 			Calculator.Now = new Date().getDay();
-			if (Calculator.Now === 0) {
-				Calculator.Now = 7;
-			}
 			Calculator.UserRestHR = 0;
 			Calculator.UserMaxHR = 0;
 			Calculator.LastWeeks = null;
@@ -57,7 +54,6 @@ var Calculator = function () {
 				return;
 			}
 
-			Calculator.Now = new Date().getDay();
 			var trains = [];
 
 			var _iteratorNormalCompletion = true;
@@ -174,11 +170,13 @@ var Calculator = function () {
 				return;
 			}
 
+			var lastWeek = Calculator.LastWeek;
+
 			//von jetzt an Math.max(MONOn, ATLn, CTLn) Tage zurück
 
 			var _loop = function _loop(i) {
 				var weeks = Calculator.Plan.weeks.filter(function (o) {
-					return o.weeknumber == Calculator.LastWeek;
+					return o.weeknumber == lastWeek;
 				});
 				if (weeks === undefined || weeks.length === 0) {
 					Calculator.Trimps.push(0);
@@ -186,7 +184,7 @@ var Calculator = function () {
 					var week = weeks[0];
 					//alle trainings an dem tag
 					var res = week.trainings.filter(function (o) {
-						return o.day + (Calculator.LastWeek - 1) * 7 == Calculator.Now - i && o.planeddone === true;
+						return o.day + (lastWeek - 1) * 7 == Calculator.Now - i && o.planeddone === true;
 					});
 					if (res === undefined || res.length === 0) //leere Trimps pushen
 						{
@@ -224,10 +222,10 @@ var Calculator = function () {
 				}
 
 				if ((Calculator.Now - i) % 7 == 1) {
-					Calculator.LastWeek--;
+					lastWeek--;
 				}
 
-				if (Calculator.LastWeek === 0) {
+				if (lastWeek === 0) {
 					return "break";
 				}
 			};
@@ -341,12 +339,13 @@ var Calculator = function () {
 	}, {
 		key: "createChartData",
 		value: function createChartData() {
-			var now = new Date().getDay();
+			var now = Calculator.Now;
 			var week = 0;
 			var dataDays = [];
 			var dataWeeks = [];
 			var sumWeekTrimp = 0;
 			for (var i = 0; i < Calculator.Trimps.length; i++) {
+				console.log("weee" + week);
 				if (i < 7) {
 					var dataDay = {
 						x: Calculator.getDay(now),
@@ -359,7 +358,7 @@ var Calculator = function () {
 				sumWeekTrimp += Calculator.Trimps[i];
 
 				now--;
-				if (now === 0) //Woche zu Ende -> von vorne
+				if (now % 7 == 0) //Woche zu Ende -> von vorne
 					{
 						//Wochendaten setzen
 						var dataWeek = {
@@ -415,6 +414,8 @@ var Calculator = function () {
 	}, {
 		key: "getDay",
 		value: function getDay(index) {
+			index = index % 7;
+
 			switch (index) {
 				case 1:
 					return 'Mo';
@@ -540,6 +541,9 @@ var Calculator = function () {
 	}, {
 		key: "Now",
 		set: function set(value) {
+			if (value === 0) {
+				value = 7;
+			}
 			Calculator._Now = value;
 		},
 		get: function get() {

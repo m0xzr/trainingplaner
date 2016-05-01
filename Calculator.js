@@ -101,6 +101,9 @@ class Calculator {
 	}
 
 	static set Now(value) {
+		if (value === 0) {
+			value = 7;
+		}
 		Calculator._Now = value;
 	}
 
@@ -177,9 +180,6 @@ class Calculator {
 		Calculator.LastWeek = -1;
 		Calculator.LastTraining = -1;
 		Calculator.Now = new Date().getDay();
-		if (Calculator.Now === 0) {
-			Calculator.Now = 7;
-		}
 		Calculator.UserRestHR = 0;
 		Calculator.UserMaxHR = 0;
 		Calculator.LastWeeks = null;
@@ -199,7 +199,6 @@ class Calculator {
 			return;
 		}
 
-		Calculator.Now = new Date().getDay();
 		let trains = [];
 
 		for (const w of Calculator.Plan.weeks) {
@@ -251,11 +250,13 @@ class Calculator {
 		if (!Calculator.isInitialized()) {
 			return;
 		}
+		
+		let lastWeek = Calculator.LastWeek;
 
 		//von jetzt an Math.max(MONOn, ATLn, CTLn) Tage zurück
 		for (let i = 0; i < Math.max(Calculator.MONOn, Calculator.ATLn, Calculator.CTLn); i++) {
 			let weeks = Calculator.Plan.weeks.filter(function (o) {
-					return o.weeknumber == Calculator.LastWeek;
+					return o.weeknumber == lastWeek;
 				});
 			if (weeks === undefined || weeks.length === 0) {
 				Calculator.Trimps.push(0);
@@ -263,7 +264,7 @@ class Calculator {
 				let week = weeks[0];
 				//alle trainings an dem tag
 				let res = week.trainings.filter(function (o) {
-						return ((o.day + ((Calculator.LastWeek - 1) * 7)) == (Calculator.Now - i)) && (o.planeddone === true);
+						return ((o.day + ((lastWeek - 1) * 7)) == (Calculator.Now - i)) && (o.planeddone === true);
 					});
 				if (res === undefined || res.length === 0) //leere Trimps pushen
 				{
@@ -279,10 +280,10 @@ class Calculator {
 			}
 
 			if ((Calculator.Now - i) % 7 == 1) {
-				Calculator.LastWeek--;
+				lastWeek--;
 			}
 
-			if (Calculator.LastWeek === 0) {
+			if (lastWeek === 0) {
 				break;
 			}
 		}
@@ -388,12 +389,12 @@ class Calculator {
 	}
 
 	static createChartData() {
-		let now = new Date().getDay();
+		let now = Calculator.Now;
 		let week = 0;
 		let dataDays = [];
 		let dataWeeks = [];
 		let sumWeekTrimp = 0;
-		for (let i = 0; i < Calculator.Trimps.length; i++) {
+		for (let i = 0; i < Calculator.Trimps.length; i++) {console.log("weee"+week);
 			if (i < 7) {
 				let dataDay = {
 					x : Calculator.getDay(now),
@@ -406,7 +407,7 @@ class Calculator {
 			sumWeekTrimp += Calculator.Trimps[i];
 
 			now--;
-			if (now === 0) //Woche zu Ende -> von vorne
+			if (now % 7 == 0) //Woche zu Ende -> von vorne
 			{
 				//Wochendaten setzen
 				let dataWeek = {
@@ -461,6 +462,8 @@ class Calculator {
 	}
 
 	static getDay(index) {
+		index = index % 7;
+		
 		switch (index) {
 		case 1:
 			return 'Mo';
