@@ -32,7 +32,6 @@ var Calculator = function () {
 			Calculator.Plan = null;
 			Calculator.LastWeek = -1;
 			Calculator.LastTraining = -1;
-			Calculator.Now = new Date().getDay();
 			Calculator.UserRestHR = 0;
 			Calculator.UserMaxHR = 0;
 			Calculator.LastWeeks = null;
@@ -151,13 +150,10 @@ var Calculator = function () {
 				return;
 			}
 
-			if (Calculator.Now < Calculator.LastTraining) //dann liegt now in der nächsten Woche
+			if (Calculator.WeekDay < Calculator.LastTraining) //dann liegt now in der nächsten Woche
 				{
-					Calculator.Now += Calculator.LastWeek * 7;
 					Calculator.LastWeek++;
-				} else {
-				Calculator.Now += (Calculator.LastWeek - 1) * 7;
-			}
+				}
 
 			console.log("lastWeek:" + Calculator.LastWeek);
 			console.log("lastTraining:" + Calculator.LastTraining);
@@ -345,7 +341,6 @@ var Calculator = function () {
 			var dataWeeks = [];
 			var sumWeekTrimp = 0;
 			for (var i = 0; i < Calculator.Trimps.length; i++) {
-				console.log("weee" + week);
 				if (i < 7) {
 					var dataDay = {
 						x: Calculator.getDay(now),
@@ -414,9 +409,7 @@ var Calculator = function () {
 	}, {
 		key: "getDay",
 		value: function getDay(index) {
-			index = index % 7;
-
-			switch (index) {
+			switch (index % 7) {
 				case 1:
 					return 'Mo';
 				case 2:
@@ -430,6 +423,7 @@ var Calculator = function () {
 				case 6:
 					return 'Sa';
 				case 7:
+				case 0:
 					return 'So';
 				default:
 					return '';
@@ -539,15 +533,24 @@ var Calculator = function () {
 			return Calculator._LastTraining;
 		}
 	}, {
-		key: "Now",
-		set: function set(value) {
-			if (value === 0) {
-				value = 7;
-			}
-			Calculator._Now = value;
-		},
+		key: "WeekDay",
 		get: function get() {
-			return Calculator._Now;
+			var day = new Date().getDay();
+			if (day === 0) {
+				day = 7;
+			}
+			return day;
+		}
+	}, {
+		key: "Now",
+		get: function get() {
+			var now = Calculator.WeekDay;
+
+			if (Calculator.LastWeek != -1) {
+				now += (Calculator.LastWeek - 1) * 7;
+			}
+
+			return now;
 		}
 	}, {
 		key: "UserRestHR",
