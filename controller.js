@@ -12,7 +12,7 @@ app.filter("sanitize", ['$sce', function ($sce) {
 	]);
 
 app.controller('Ctrl', function ($scope, $filter, $http) {
-	var requestUrl = "http://lerche.dyndns.info:4980/runalyze/trainingplaner_dev/trainingplaner/db_interaction.php";
+	var requestUrl = "http://lerche.dyndns.info:4980/trainingplaner_dev/trainingplaner/db_interaction.php";
 	$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
 	$scope.weekTitle = '';
