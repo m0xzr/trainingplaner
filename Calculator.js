@@ -100,15 +100,22 @@ class Calculator {
 		return Calculator._LastTraining;
 	}
 
-	static set Now(value) {
-		if (value === 0) {
-			value = 7;
+	static get WeekDay() {
+		let day = new Date().getDay();
+		if (day === 0) {
+			day = 7;
 		}
-		Calculator._Now = value;
+		return day;
 	}
 
 	static get Now() {
-		return Calculator._Now;
+		let now = Calculator.WeekDay;
+
+		if (Calculator.LastWeek != -1) {
+			now += (Calculator.LastWeek - 1) * 7;
+		}
+
+		return now;
 	}
 
 	static set UserRestHR(value) {
@@ -179,7 +186,6 @@ class Calculator {
 		Calculator.Plan = null;
 		Calculator.LastWeek = -1;
 		Calculator.LastTraining = -1;
-		Calculator.Now = new Date().getDay();
 		Calculator.UserRestHR = 0;
 		Calculator.UserMaxHR = 0;
 		Calculator.LastWeeks = null;
@@ -233,12 +239,9 @@ class Calculator {
 			return;
 		}
 
-		if (Calculator.Now < Calculator.LastTraining) //dann liegt now in der nächsten Woche
+		if (Calculator.WeekDay < Calculator.LastTraining) //dann liegt now in der nächsten Woche
 		{
-			Calculator.Now += Calculator.LastWeek * 7;
 			Calculator.LastWeek++;
-		} else {
-			Calculator.Now += (Calculator.LastWeek - 1) * 7;
 		}
 
 		console.log("lastWeek:" + Calculator.LastWeek);
@@ -250,7 +253,7 @@ class Calculator {
 		if (!Calculator.isInitialized()) {
 			return;
 		}
-		
+
 		let lastWeek = Calculator.LastWeek;
 
 		//von jetzt an Math.max(MONOn, ATLn, CTLn) Tage zurück
@@ -394,7 +397,7 @@ class Calculator {
 		let dataDays = [];
 		let dataWeeks = [];
 		let sumWeekTrimp = 0;
-		for (let i = 0; i < Calculator.Trimps.length; i++) {console.log("weee"+week);
+		for (let i = 0; i < Calculator.Trimps.length; i++) {
 			if (i < 7) {
 				let dataDay = {
 					x : Calculator.getDay(now),
@@ -462,9 +465,7 @@ class Calculator {
 	}
 
 	static getDay(index) {
-		index = index % 7;
-		
-		switch (index) {
+		switch (index % 7) {
 		case 1:
 			return 'Mo';
 		case 2:
@@ -478,6 +479,7 @@ class Calculator {
 		case 6:
 			return 'Sa';
 		case 7:
+		case 0:
 			return 'So';
 		default:
 			return '';
