@@ -178,7 +178,7 @@
       </td>
       <td style="white-space: nowrap">
         <!-- form -->
-        <form editable-form name="rowform" onbeforesave="editTraining(week, training, $data)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == training">
+        <form editable-form name="rowform" onbeforesave="editTraining(week, training, $data, false)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == training">
           <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
           </button>
@@ -240,7 +240,7 @@
       </td>
       <td style="white-space: nowrap">
         <!-- form -->
-        <form editable-form name="rowform" onbeforesave="editTraining(week, training, $data)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == training">
+        <form editable-form name="rowform" onbeforesave="editTraining(week, training, $data, true)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == training">
           <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
           </button>
