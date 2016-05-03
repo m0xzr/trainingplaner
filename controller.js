@@ -216,7 +216,7 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 		angular.extend(data, {
 			id : training.id
 		});
-		if (data.avghr === undefined) {
+		if (data.avghr === 0) {
 			angular.extend(data, {
 				avghr : 0
 			});
@@ -232,10 +232,16 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 				}
 			});
 		request.success(function (response) {
+			console.log(response);
 			var index = week.trainings.indexOf(training);
 			if (index > -1) {
-				week.trainings.splice(index, 1);
-				week.trainings.splice(index, 0, response);
+				if (data.avghr === 0) {
+					//Keine HR Daten eingetragen -> versuchen welche zu finden
+					$scope.avgHrOfSimilarTrainings(data, training, response, week, index);
+				} else {
+					week.trainings.splice(index, 1);
+					week.trainings.splice(index, 0, response);
+				}
 			}
 		}).
 		error(function (response) {
@@ -261,6 +267,31 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 		if (index > -1) {
 			week.trainings.splice(index, 1);
 		}
+	};
+
+	$scope.avgHrOfSimilarTrainings = function (data, oldTraining, newTraining, week, index) {
+		console.log("Search AvgHr For:");
+		console.log(data);
+		var request = $http({
+				method : "post",
+				url : requestUrl,
+				data : {
+					action : 'AvgHrOfSimilarTrainings',
+					obj : data
+				}
+			});
+		request.success(function (response) {
+			if (response > 0 && confirm("Es wurde " + response + " als Durchschnittspuls bei ähnlichen Trainings gefunden. Soll dieser eingetragen werden?") == true) {
+				data.avghr = parseInt(response);
+				$scope.editTraining(week, oldTraining, data);		//nochmal updaten
+			} else {
+				week.trainings.splice(index, 1);
+				week.trainings.splice(index, 0, newTraining);
+			}
+		}).
+		error(function (response) {
+			alert("error");
+		});
 	};
 
 	$scope.removePlan = function (plans, plan) {

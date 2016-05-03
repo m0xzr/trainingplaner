@@ -113,7 +113,7 @@
 				}
 				break;
 			case "EditTraining":
-				if(isset($obj->id)/* && isset($obj->type)*/ && isset($obj->annotation) && isset($obj->durationhours) && isset($obj->durationminutes) && ctype_digit((string)$obj->durationhours) && ctype_digit((string)$obj->durationminutes)&& isset($obj->avghr) && ctype_digit((string)$obj->avghr))
+				if(isset($obj->id)/* && isset($obj->type)*/ && isset($obj->annotation) && isset($obj->durationhours) && isset($obj->durationminutes) && ctype_digit((string)$obj->durationhours) && ctype_digit((string)$obj->durationminutes) && isset($obj->avghr) && ctype_digit((string)$obj->avghr))
 				{
 					print_r(json_encode(PlanerDAL::EditTraining($obj->id, $obj->sport, $obj->type, $obj->annotation, $obj->durationhours, $obj->durationminutes, $obj->avghr)));
 				}
@@ -122,6 +122,12 @@
 				if(isset($obj->id))
 				{
 					PlanerDAL::RemoveTraining($obj->id);
+				}
+				break;
+			case "AvgHrOfSimilarTrainings":
+				if(isset($obj->sport) && isset($obj->type) && isset($obj->durationhours) && isset($obj->durationminutes) && ctype_digit((string)$obj->durationhours) && ctype_digit((string)$obj->durationminutes))
+				{
+					print_r((PlanerDAL::AvgHrOfSimilarTrainings($obj->sport, $obj->type, $obj->durationhours, $obj->durationminutes)));
 				}
 				break;
 			//default:

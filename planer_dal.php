@@ -434,6 +434,38 @@ class PlanerDAL extends DAL
 		
 		return $retVal;
 	}
+	
+	public static function AvgHrOfSimilarTrainings($sport, $type, $durationHours, $durationMinutes)
+	{
+	    $retVal = null;
+		
+		$offSet = 0.05;
+		$maxDuration = ($durationHours * 60 + $durationMinutes) * (1 + $offSet);
+		$minDuration = ($durationHours * 60 + $durationMinutes) * (1 - $offSet);
+
+		$conn = self::GetDbConnection();
+		$sql = sprintf("SELECT avg(AvgHR) as av FROM Training WHERE Sport = %d AND Type = %d and PlanedDone = %b and DurationHours * 60 + DurationMinutes between %d and %d and AvgHR > 0", 
+						$sport,
+						$type,
+						true,
+						$minDuration,
+						$maxDuration);
+		$result = $conn->query($sql);
+		if ($result->num_rows > 0) 
+		{
+			while($row = $result->fetch_assoc()) 
+			{
+				$retVal = intval($row["av"]);
+			}
+		} 
+		else 
+		{
+			//echo "0 results";
+		}		
+		self::CloseDbConnection();
+
+		return $retVal;
+	}
 }
 
 ?>
