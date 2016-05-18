@@ -54,6 +54,13 @@ dt:after
 	top: 0px;
 }
 
+#abs_rightPadded
+{
+	position: absolute;
+	right: 50px;
+	top: 0px;
+}
+
 #main
 {
 	width: 90%;

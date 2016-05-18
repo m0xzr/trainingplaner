@@ -87,7 +87,7 @@
 </div>
 <div id="plans">
 	<div class="btn-group" role="group" aria-label="...">
-	  <button  ng-repeat="p in plans" ng-click="getPlan(p)" onClick="window.location.href='index.php<?php echo "?pw=".$pw."&user=".$username ?>#plan'" type="button" class="btn btn-default">{{p.title}}</button>
+	  <button  ng-repeat="p in plans" ng-click="getPlan(p)" onClick="'index.php<?php echo "?pw=".$pw."&user=".$username ?>#plan'" type="button" class="btn btn-default">{{p.title}}</button>
 	</div>
 	<a data-container="body" data-toggle="popover" data-placement="right" id="new-plan-popover" popover><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 			<div id="popover-head-plan" class="hide">Titel des Plans</div>
@@ -102,7 +102,8 @@
 </div>
 <div id="plan_header">
 	<h1 id="plan">{{ plan.title || '' }}</h1>
-	<button class="btn btn-danger btn-xs" id="abs_right" ng-click="removePlan(plans, plan)"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
+	<button class="btn btn-primary btn-s" id="abs_rightPadded" ng-click="activatePlan(plan)"><span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span></button>
+	<button class="btn btn-danger btn-s" id="abs_right" ng-click="removePlan(plans, plan)"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
 	<ul class="nav nav-tabs">
 		<li ng-repeat="week in plan.weeks" ng-class="{'active':$last}"><a data-toggle="tab" href="#week{{$index + 1}}">Woche {{ week.weeknumber || "empty" }}</a></li>
 		<li>

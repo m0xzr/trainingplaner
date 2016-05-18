@@ -60,7 +60,14 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 			//alert(JSON.stringify(response))
 			$scope.plans = response;
 			if (response.length > 0) {
-				$scope.plan = response[0];
+				for($i = 0; $i < response.length; $i++)		//aktiven Plan setzen
+				{
+					if(response[$i].active == 1)
+					{
+						$scope.plan = response[$i];
+						break;
+					}
+				}
 			}
 		}).
 		error(function (response) {
@@ -145,6 +152,23 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 		request.success(function (response) {
 			$scope.plan = response;
 			$scope.trainings = response.weeks[0].trainings;
+		}).
+		error(function (response) {
+			alert("error");
+		});
+	};
+	
+	$scope.activatePlan = function (plan) {
+		var request = $http({
+				method : "post",
+				url : requestUrl,
+				data : {
+					action : 'ActivatePlan',
+					obj : JSON.parse('{"id" : "' + plan.id + '"}')
+				}
+			});
+		request.success(function (response) {
+			$scope.plan = plan;
 		}).
 		error(function (response) {
 			alert("error");

@@ -74,6 +74,7 @@ CREATE TABLE trainingplaner.Plan
 (
 ID int(10) unsigned NOT NULL AUTO_INCREMENT,
 Title varchar(255) NOT NULL UNIQUE,
+Active bool NOT NULL DEFAULT FALSE,
 PRIMARY KEY (ID)
 )
 
