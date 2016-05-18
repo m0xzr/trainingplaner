@@ -64,6 +64,12 @@
 					PlanerDAL::EditPlan($obj->id, $obj->title);
 				}
 				break;
+			case "ActivatePlan":
+				if(isset($obj->id))
+				{
+					PlanerDAL::ActivatePlan($obj->id);
+				}
+				break;
 			case "GetPlan":
 				if(isset($obj->id))
 				{

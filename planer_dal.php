@@ -10,7 +10,7 @@ class PlanerDAL extends DAL
 		$retVal = array();
 		
 		$conn = self::GetDbConnection();
-		$sql = "SELECT id, title FROM Plan ORDER BY id ASC";
+		$sql = "SELECT id, title, active FROM Plan ORDER BY id ASC";
 		$result = $conn->query($sql);
 		if ($result->num_rows > 0) 
 		{
@@ -18,11 +18,36 @@ class PlanerDAL extends DAL
 			{
 				$id = intval($row["id"]);
 				$title = $row["title"];
+				$active = boolval($row["active"]);
 				if(isset($id))
 				{
 					$weeks = self::GetWeeks($id);
-					array_push($retVal, new Plan($id, $title, $weeks));
+					array_push($retVal, new Plan($id, $title, $active, $weeks));
 				}
+			}
+		} 
+		else 
+		{
+			//echo "0 results";
+		}
+
+		self::CloseDbConnection();
+		
+		return $retVal;
+	}
+	
+	public static function GetPlanIds()
+	{
+		$retVal = array();
+		
+		$conn = self::GetDbConnection();
+		$sql = "SELECT id FROM Plan ORDER BY id ASC";
+		$result = $conn->query($sql);
+		if ($result->num_rows > 0) 
+		{
+			while($row = $result->fetch_assoc()) 
+			{
+				array_push($retVal, intval($row["id"]));
 			}
 		} 
 		else 
@@ -39,7 +64,7 @@ class PlanerDAL extends DAL
 	{
 		$conn = self::GetDbConnection();		
 		$retVal = 0;		
-		$sql = sprintf("INSERT INTO Plan (Title) VALUES ('%s')", $conn->real_escape_string($title));
+		$sql = sprintf("INSERT INTO Plan (Title, Active) VALUES ('%s', false)", $conn->real_escape_string($title));
 		if ($conn->query($sql) === TRUE) 
 		{
 			//echo "New record created successfully";
@@ -49,7 +74,11 @@ class PlanerDAL extends DAL
 		{
 			//echo "Error: " . $sql . "<br>" . $conn->error;
 		}		
-		self::CloseDbConnection();	
+		self::CloseDbConnection();
+
+		//Alle anderen deaktivieren
+		self::ActivatePlan($retVal->ID);
+		
 		return $retVal;
 	}
 	
@@ -65,6 +94,38 @@ class PlanerDAL extends DAL
 		{
 			//echo "Error: " . $sql . "<br>" . $conn->error;
 		}		
+		self::CloseDbConnection();
+	}
+	
+	public static function ActivatePlan($IdToActivate)
+	{
+		$planIds = self::GetPlanIds();
+
+		$conn = self::GetDbConnection();
+		
+		for($i = 0; $i < sizeof($planIds); $i++)		//zuerst alle deaktivieren
+	    {
+			$sql = sprintf("UPDATE Plan set Active = false WHERE ID = %d", $planIds[$i]);
+			if ($conn->query($sql) === TRUE) 
+			{
+				//echo "Record updated successfully";
+			} 
+			else 
+			{
+				//echo "Error: " . $sql . "<br>" . $conn->error;
+			}
+		}		
+		
+		$sql = sprintf("UPDATE Plan set Active = true WHERE ID = %d", $IdToActivate);
+		if ($conn->query($sql) === TRUE) 
+		{
+			//echo "Record updated successfully";
+		} 
+		else 
+		{
+			//echo "Error: " . $sql . "<br>" . $conn->error;
+		}
+		
 		self::CloseDbConnection();
 	}
 	
@@ -93,10 +154,11 @@ class PlanerDAL extends DAL
 	{
 		$id = -1;
 		$title;
+		$active;
 		$retVal = null;
 		
 		$conn = self::GetDbConnection();
-		$sql = sprintf("SELECT id, title FROM Plan WHERE id = %d", $ID);
+		$sql = sprintf("SELECT id, title, active FROM Plan WHERE id = %d", $ID);
 		$result = $conn->query($sql);
 		if ($result->num_rows > 0) 
 		{
@@ -104,6 +166,7 @@ class PlanerDAL extends DAL
 			{
 				$id = intval($row["id"]);
 				$title = $row["title"];
+				$active = boolval($row["active"]);
 			}
 		} 
 		else 
@@ -114,7 +177,7 @@ class PlanerDAL extends DAL
 		if($id != -1)
 		{
 		    $weeks = self::GetWeeks($id);
-		    $retVal = new Plan($id, $title, $weeks);
+		    $retVal = new Plan($id, $title, $active, $weeks);
 		}
 		
 		self::CloseDbConnection();
@@ -126,10 +189,11 @@ class PlanerDAL extends DAL
 	{
 		$id = -1;
 		$title;
+		$active;
 		$retVal = null;
 		
 		$conn = self::GetDbConnection();
-		$sql = sprintf("SELECT id, title FROM Plan WHERE Title = '%s'", $conn->real_escape_string($title));
+		$sql = sprintf("SELECT id, title, active FROM Plan WHERE Title = '%s'", $conn->real_escape_string($title));
 		$result = $conn->query($sql);
 		if ($result->num_rows > 0) 
 		{
@@ -137,6 +201,7 @@ class PlanerDAL extends DAL
 			{
 				$id = intval($row["id"]);
 				$title = $row["title"];
+				$active = boolval($row["active"]);
 			}
 		} 
 		else 
@@ -148,7 +213,7 @@ class PlanerDAL extends DAL
 		if($id != -1)
 		{
 		    $weeks = self::GetWeeks($id);
-		    $retVal = new Plan($id, $title, $weeks);
+		    $retVal = new Plan($id, $title, $active, $weeks);
 		}
 		
 		self::CloseDbConnection();

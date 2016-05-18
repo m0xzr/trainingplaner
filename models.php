@@ -71,12 +71,14 @@ class Plan implements JsonSerializable
 {
 	public $ID;
 	public $Title;
+	public $Active;
 	public $Weeks = array();
 	
-	public function __construct($iD, $title, $weeks) 
+	public function __construct($iD, $title, $active, $weeks) 
 	{
 		$this->ID = $iD;
 		$this->Title = $title;
+		$this->Active = $active;
 		$this->Weeks = $weeks;
 	}
 	
@@ -86,6 +88,7 @@ class Plan implements JsonSerializable
 		[
             'id' => $this->ID,
             'title' => $this->Title,
+			'active' => $this->Active,
 			'weeks' => $this->Weeks
         ];
     }
