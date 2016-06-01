@@ -166,11 +166,45 @@ class Calculator {
 		return Calculator._LastDays;
 	}
 
-	static Init(plan, userRestHR, userMaxHR) {
+	static Init(plans, userRestHR, userMaxHR) {
+		console.log(plans);
 		Calculator.resetValues();
-		Calculator.Plan = plan;
+		Calculator.Plan = Calculator.initPlan(plans);
 		Calculator.UserRestHR = userRestHR;
 		Calculator.UserMaxHR = userMaxHR;
+	}
+	
+	static initPlan(plans) {				//aus mehreren Plänen einen machen
+		if(plans === null) {
+			return null;
+		}
+		
+		if(plans.length === 0) {
+			return null;
+		}
+		
+		let plan = plans[plans.length - 1];
+		
+		for(let i = 0; i < plans.length - 1; i++) {
+			if(plans[i].weeks === undefined) {
+				continue;
+			}
+			
+			for(let j = plans[i].weeks.length - 1; j >= 0; j--) {
+				if(plans[i].weeks[j].trainings === undefined || plans[i].weeks[j].trainings.length === 0) {
+					continue;
+				}
+				
+				plan.weeks.unshift(plans[i].weeks[j]);
+			}
+		}
+		
+		//Wochen neu durchnummerieren
+		for(let i = 0; i < plan.weeks.length; i++) {
+			plan.weeks[i].weeknumber = i + 1;
+		}
+		
+		return plan;
 	}
 
 	static resetValues() {
