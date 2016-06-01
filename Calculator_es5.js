@@ -11,11 +11,47 @@ var Calculator = function () {
 
 	_createClass(Calculator, null, [{
 		key: "Init",
-		value: function Init(plan, userRestHR, userMaxHR) {
+		value: function Init(plans, userRestHR, userMaxHR) {
+			console.log(plans);
 			Calculator.resetValues();
-			Calculator.Plan = plan;
+			Calculator.Plan = Calculator.initPlan(plans);
 			Calculator.UserRestHR = userRestHR;
 			Calculator.UserMaxHR = userMaxHR;
+		}
+	}, {
+		key: "initPlan",
+		value: function initPlan(plans) {
+			//aus mehreren Plänen einen machen
+			if (plans === null) {
+				return null;
+			}
+
+			if (plans.length === 0) {
+				return null;
+			}
+
+			var plan = plans[plans.length - 1];
+
+			for (var i = 0; i < plans.length - 1; i++) {
+				if (plans[i].weeks === undefined) {
+					continue;
+				}
+
+				for (var j = plans[i].weeks.length - 1; j >= 0; j--) {
+					if (plans[i].weeks[j].trainings === undefined || plans[i].weeks[j].trainings.length === 0) {
+						continue;
+					}
+
+					plan.weeks.unshift(plans[i].weeks[j]);
+				}
+			}
+
+			//Wochen neu durchnummerieren
+			for (var _i = 0; _i < plan.weeks.length; _i++) {
+				plan.weeks[_i].weeknumber = _i + 1;
+			}
+
+			return plan;
 		}
 	}, {
 		key: "resetValues",
@@ -233,8 +269,8 @@ var Calculator = function () {
 			}
 
 			//Monotonie und Strain
-			for (var _i = 0; _i < Math.min(Calculator.MONOn, Calculator.Trimps.length); _i++) {
-				Calculator.Trimps_Sum += Calculator.Trimps[_i];
+			for (var _i2 = 0; _i2 < Math.min(Calculator.MONOn, Calculator.Trimps.length); _i2++) {
+				Calculator.Trimps_Sum += Calculator.Trimps[_i2];
 			}
 
 			console.log('trimps:' + Calculator.Trimps);
@@ -258,8 +294,8 @@ var Calculator = function () {
 			var avg = Calculator.Trimps_Sum / Math.min(Calculator.MONOn, Calculator.Trimps.length);
 			var variance = 0;
 
-			for (var _i2 = 0; _i2 < Math.min(Calculator.MONOn, Calculator.Trimps.length); _i2++) {
-				variance += Math.pow(Calculator.Trimps[_i2] - avg, 2);
+			for (var _i3 = 0; _i3 < Math.min(Calculator.MONOn, Calculator.Trimps.length); _i3++) {
+				variance += Math.pow(Calculator.Trimps[_i3] - avg, 2);
 			}
 
 			variance /= Math.min(Calculator.MONOn, Calculator.Trimps.length);

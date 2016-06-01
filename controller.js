@@ -22,8 +22,23 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 		if (newVal === undefined) {
 			return;
 		}
-
-		$scope.updateCalculations(newVal);
+		
+		var request = $http({
+				method : "post",
+				url : requestUrl,
+				data : {
+					action : 'GetPlans',
+					obj : JSON.parse('{"" : ""}')
+				}
+			});
+		request.success(function (response) {
+			//alert(JSON.stringify(response))
+			$scope.plans = response;
+			$scope.updateCalculations();
+		}).
+		error(function (response) {
+			alert(response + "error");
+		});
 	}, true);
 
 	//initiale Daten laden
@@ -449,8 +464,8 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 		return retVal;
 	}
 
-	$scope.updateCalculations = function (plan) {
-		Calculator.Init(plan, $scope.userdata.hrrest, $scope.userdata.hrmax);
+	$scope.updateCalculations = function () {
+		Calculator.Init($scope.plans, $scope.userdata.hrrest, $scope.userdata.hrmax);
 		Calculator.calcPerformance();
 
 		$scope.monotony = Calculator.Monotony;

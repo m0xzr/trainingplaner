@@ -10,7 +10,7 @@ class PlanerDAL extends DAL
 		$retVal = array();
 		
 		$conn = self::GetDbConnection();
-		$sql = "SELECT id, title, active FROM Plan ORDER BY id ASC";
+		$sql = "SELECT id, title, active, DATE_FORMAT(creationdate, '%d.%m.%Y') as formated FROM Plan ORDER BY creationdate ASC";
 		$result = $conn->query($sql);
 		if ($result->num_rows > 0) 
 		{
@@ -19,10 +19,11 @@ class PlanerDAL extends DAL
 				$id = intval($row["id"]);
 				$title = $row["title"];
 				$active = boolval($row["active"]);
+				$formated = $row["formated"];
 				if(isset($id))
 				{
 					$weeks = self::GetWeeks($id);
-					array_push($retVal, new Plan($id, $title, $active, $weeks));
+					array_push($retVal, new Plan($id, $title, $active, $weeks, $formated));
 				}
 			}
 		} 
@@ -155,10 +156,11 @@ class PlanerDAL extends DAL
 		$id = -1;
 		$title;
 		$active;
+		$formated;
 		$retVal = null;
 		
 		$conn = self::GetDbConnection();
-		$sql = sprintf("SELECT id, title, active FROM Plan WHERE id = %d", $ID);
+		$sql = sprintf("SELECT id, title, active, DATE_FORMAT(creationdate, '%%d.%%m.%%Y') as formated FROM Plan WHERE id = %d", $ID);
 		$result = $conn->query($sql);
 		if ($result->num_rows > 0) 
 		{
@@ -167,6 +169,7 @@ class PlanerDAL extends DAL
 				$id = intval($row["id"]);
 				$title = $row["title"];
 				$active = boolval($row["active"]);
+				$formated = $row["formated"];
 			}
 		} 
 		else 
@@ -177,7 +180,7 @@ class PlanerDAL extends DAL
 		if($id != -1)
 		{
 		    $weeks = self::GetWeeks($id);
-		    $retVal = new Plan($id, $title, $active, $weeks);
+		    $retVal = new Plan($id, $title, $active, $weeks, $formated);
 		}
 		
 		self::CloseDbConnection();
@@ -190,10 +193,11 @@ class PlanerDAL extends DAL
 		$id = -1;
 		$title;
 		$active;
+		$formated;
 		$retVal = null;
 		
 		$conn = self::GetDbConnection();
-		$sql = sprintf("SELECT id, title, active FROM Plan WHERE Title = '%s'", $conn->real_escape_string($title));
+		$sql = sprintf("SELECT id, title, active, DATE_FORMAT(creationdate, '%%d.%%m.%%Y') as formated FROM Plan WHERE Title = '%s'", $conn->real_escape_string($title));
 		$result = $conn->query($sql);
 		if ($result->num_rows > 0) 
 		{
@@ -202,6 +206,7 @@ class PlanerDAL extends DAL
 				$id = intval($row["id"]);
 				$title = $row["title"];
 				$active = boolval($row["active"]);
+				$formated = $row["formated"];
 			}
 		} 
 		else 
@@ -213,7 +218,7 @@ class PlanerDAL extends DAL
 		if($id != -1)
 		{
 		    $weeks = self::GetWeeks($id);
-		    $retVal = new Plan($id, $title, $active, $weeks);
+		    $retVal = new Plan($id, $title, $active, $weeks, $formated);
 		}
 		
 		self::CloseDbConnection();
