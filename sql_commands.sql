@@ -79,6 +79,15 @@ CreationDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (ID)
 )
 
+CREATE TABLE trainingplaner.Thoughts
+(
+Training int(10) unsigned NOT NULL,
+Thought MEDIUMTEXT,
+PRIMARY KEY (Training),
+CONSTRAINT fk_Training FOREIGN KEY (Training)
+REFERENCES trainingplaner.Training(id)
+)
+
 
 
 

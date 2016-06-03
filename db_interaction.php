@@ -136,6 +136,24 @@
 					print_r((PlanerDAL::AvgHrOfSimilarTrainings($obj->sport, $obj->type, $obj->durationhours, $obj->durationminutes)));
 				}
 				break;
+			case "GetThought":
+				if(isset($obj->trainingid))
+				{
+					print_r(PlanerDAL::GetThought($obj->trainingid));
+				}
+				break;
+			case "EditThought":
+				if(isset($obj->trainingid) && isset($obj->thought))
+				{
+					print_r(PlanerDAL::EditThought($obj->trainingid, $obj->thought));
+				}
+				break;
+			case "RemoveThought":
+				if(isset($obj->trainingid))
+				{
+					PlanerDAL::RemoveThought($obj->trainingid);
+				}
+				break;
 			//default:
 		}
 	}

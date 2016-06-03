@@ -167,7 +167,6 @@ class Calculator {
 	}
 
 	static Init(plans, userRestHR, userMaxHR) {
-		console.log(plans);
 		Calculator.resetValues();
 		Calculator.Plan = Calculator.initPlan(plans);
 		Calculator.UserRestHR = userRestHR;
@@ -278,9 +277,9 @@ class Calculator {
 			Calculator.LastWeek++;
 		}
 
-		console.log("lastWeek:" + Calculator.LastWeek);
-		console.log("lastTraining:" + Calculator.LastTraining);
-		console.log("now:" + Calculator.Now);
+		//console.log("lastWeek:" + Calculator.LastWeek);
+		//console.log("lastTraining:" + Calculator.LastTraining);
+		//console.log("now:" + Calculator.Now);
 	}
 
 	static createTrimps() {
@@ -330,8 +329,8 @@ class Calculator {
 			Calculator.Trimps_Sum += Calculator.Trimps[i];
 		}
 
-		console.log('trimps:' + Calculator.Trimps);
-		console.log('trimps_sum:' + Calculator.Trimps_Sum);
+		//console.log('trimps:' + Calculator.Trimps);
+		//console.log('trimps_sum:' + Calculator.Trimps_Sum);
 	}
 
 	static calcPerformance() {
@@ -355,7 +354,7 @@ class Calculator {
 		}
 
 		variance /= Math.min(Calculator.MONOn, Calculator.Trimps.length);
-		console.log(variance);
+		//console.log(variance);
 
 		if (variance !== 0) {
 			Calculator.Monotony = (avg / Math.sqrt(variance)).toFixed(2);
@@ -419,10 +418,10 @@ class Calculator {
 
 		Calculator.RestDays = Math.max(0, restDays).toFixed(2);
 
-		console.log(Calculator.CTL);
-		console.log(Calculator.ATL);
-		console.log(Calculator.TSB);
-		console.log(Calculator.RestDays);
+		//console.log(Calculator.CTL);
+		//console.log(Calculator.ATL);
+		//console.log(Calculator.TSB);
+		//console.log(Calculator.RestDays);
 	}
 
 	static createChartData() {
@@ -479,8 +478,8 @@ class Calculator {
 			data : dataWeeks
 		};
 
-		console.log(Calculator.LastDays);
-		console.log(Calculator.LastWeeks);
+		//console.log(Calculator.LastDays);
+		//console.log(Calculator.LastWeeks);
 	}
 
 	static getWeekName(index) {

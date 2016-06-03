@@ -192,13 +192,14 @@
           <button class="btn btn-danger" ng-click="removeTraining(week, training)"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
         </div>  
       </td>
+	  <td class="noborder">&nbsp;</td>
     </tr>
 	<tr>
 		<td class="btmtd" colspan="5"><button class="btn btn-default" ng-click="addTraining(week, $index + 1, false)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>geplantes Training hinzufügen</button></td>
 	</tr>
 	<!-- darüber geplant -->
 	<tr style="background-color: #efefef; height: 10px;">
-		<td colspan="5"  class="planedDone">Ist</td>
+		<td colspan="5" class="planedDone">Ist</td><t
 	</tr>
 	<!-- darunter erfüllt -->
 	<tr ng-repeat="training in week.trainings | filter: { day: ($index + 1), planeddone: true }">
@@ -254,6 +255,16 @@
           <button class="btn btn-danger" ng-click="removeTraining(week, training)"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
         </div>  
       </td>
+	  <td>
+			<a data-container="body" data-toggle="popover" data-placement="left" id="new-thought-popover" popover><span style="font-size:2em;" class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+				<div id="popover-head-thought" class="hide">Gedanken zum Training</div>
+				<div id="popover-content-thought" class="hide"> 
+					<textarea rows="10" cols="50"  ng-model="training.thought"></textarea><br />
+					<button ng-click="editThought(training)" class="btn btn-primary" id="close-popover" data-toggle="clickover"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+					<button ng-click="removeThought(training)" class="btn btn-danger" id="close-popover" data-toggle="clickover"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
+				</div>
+			</a>
+	  </td>
     </tr>
 	<tr>
 		<td class="btmtd" colspan="5"><button class="btn btn-default" ng-click="addTraining(week, $index + 1, true)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>absolviertes Training hinzufügen</button></td>

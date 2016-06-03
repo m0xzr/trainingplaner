@@ -414,8 +414,9 @@ class PlanerDAL extends DAL
 				$planedDone = boolval($row["PlanedDone"]);
 				$avgHR = intval($row["AvgHR"]);
 				$sportAndType = SportDAL::GetSportAndType(intval($row["Sport"]), intval($row["Type"]));
+				$thought = self::GetThought($id);
 				
-				$retVal = new Training($id, $day, $annotation, $durationHours, $durationMinutes, $sportAndType, $planedDone, $avgHR);
+				$retVal = new Training($id, $day, $annotation, $durationHours, $durationMinutes, $sportAndType, $planedDone, $avgHR, $thought);
 			}
 		} 
 		else 
@@ -532,6 +533,119 @@ class PlanerDAL extends DAL
 		{
 			//echo "0 results";
 		}		
+		self::CloseDbConnection();
+
+		return $retVal;
+	}
+	
+	public static function GetThought($trainingid)
+	{
+	    $retVal = null;
+
+		$conn = self::GetDbConnection();
+		$sql = sprintf("SELECT thought FROM Thoughts WHERE training = %d", $trainingid);
+		$result = $conn->query($sql);
+		if ($result->num_rows > 0) 
+		{
+			while($row = $result->fetch_assoc()) 
+			{
+				$retVal = $row["thought"];
+			}
+		} 
+		else 
+		{
+			//echo "0 results";
+		}		
+		self::CloseDbConnection();
+
+		return $retVal;
+	}
+	
+	public static function HasThought($trainingid)
+	{
+	    $retVal = false;
+
+		$conn = self::GetDbConnection();
+		$sql = sprintf("SELECT count(training) as c FROM Thoughts WHERE training = %d", $trainingid);
+		$result = $conn->query($sql);
+		if ($result->num_rows > 0) 
+		{
+			while($row = $result->fetch_assoc()) 
+			{
+				if(intval($row["c"]) == 1) {
+					$retVal = true;
+				}
+			}
+		} 
+		else 
+		{
+			//echo "0 results";
+		}		
+		self::CloseDbConnection();
+
+		return $retVal;
+	}
+	
+	public static function AddThought($trainingid, $thought)
+	{
+		$conn = self::GetDbConnection();
+		$sql = sprintf("INSERT INTO Thoughts (Training, Thought) VALUES (%d, '%s')",
+							$trainingid,
+							$conn->real_escape_string($thought));
+		$retVal = null;
+		if ($conn->query($sql) == TRUE) 
+		{
+			$retVal = $thought;
+		} 
+		else 
+		{
+			//echo "Error: " . $sql . "<br>" . $conn->error;
+		}
+		self::CloseDbConnection();
+		
+		return $retVal;
+	}
+	
+	public static function RemoveThought($trainingid)
+	{
+		$conn = self::GetDbConnection();
+		$sql = sprintf("DELETE FROM Thoughts where training = %d", $trainingid);
+		$retVal = 0;
+		if ($conn->query($sql) == TRUE) 
+		{
+			//echo "Record deleted successfully";
+		} 
+		else 
+		{
+			echo "Error: " . $sql . "<br>" . $conn->error;
+		}
+		self::CloseDbConnection();
+	}
+	
+	public static function EditThought($trainingid, $thought)
+	{
+		if(self::HasThought($trainingid) == false)			//noch kein Gedanke -> erstellen
+		{
+			return self::AddThought($trainingid, $thought);
+		}
+		
+		$retVal = null;
+		
+		$conn = self::GetDbConnection();
+		
+		$sql = sprintf("UPDATE Thoughts set Thought = '%s' WHERE training = %d",
+								$conn->real_escape_string($thought),
+								$trainingid);
+
+		if ($conn->query($sql) === TRUE) 
+		{
+			$retVal = $thought;
+			//echo "Record updated successfully";
+		} 
+		else 
+		{
+			//echo "Error: " . $sql . "<br>" . $conn->error;
+		}
 		self::CloseDbConnection();
 
 		return $retVal;

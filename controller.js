@@ -43,7 +43,7 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 
 	//initiale Daten laden
 	$scope.init = function (username) {
-		console.log(username);
+		//console.log(username);
 
 		var request = $http({
 				method : "post",
@@ -54,7 +54,7 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 				}
 			});
 		request.success(function (response) {
-			console.log(JSON.stringify(response));
+			//console.log(JSON.stringify(response));
 			$scope.userdata = response;
 			$scope.userweight = $scope.userdata.weight;
 			$scope.userhrmax = $scope.userdata.hrmax;
@@ -98,7 +98,7 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 				}
 			});
 		request.success(function (response) {
-			console.log(JSON.stringify(response));
+			//console.log(JSON.stringify(response));
 			$scope.sportsandtypes = response;
 		}).
 		error(function (response) {
@@ -111,7 +111,7 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 	};
 
 	$scope.insertUserData = function () {
-		console.log(JSON.parse('{"userid" : ' + $scope.userdata.userid + ', "weight" : ' + $scope.userweight + ', "hrmax" : ' + $scope.userhrmax + ', "hrrest" : ' + $scope.userhrrest + '}'));
+		//console.log(JSON.parse('{"userid" : ' + $scope.userdata.userid + ', "weight" : ' + $scope.userweight + ', "hrmax" : ' + $scope.userhrmax + ', "hrrest" : ' + $scope.userhrrest + '}'));
 
 		var request = $http({
 				method : "post",
@@ -122,7 +122,7 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 				}
 			});
 		request.success(function (response) {
-			console.log(JSON.stringify(response));
+			//console.log(JSON.stringify(response));
 			$scope.userdata = response;
 		}).error(function (response) {
 			alert("error");
@@ -232,7 +232,7 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 	};
 
 	$scope.addTraining = function (week, day, planedDone) {
-		console.log(JSON.parse('{"week" : ' + week.id + ', "day" : ' + day + ', "sport" : 1, "type" : 1, "annotation" : "", "durationhours" : 0, "durationminutes" : 0, "planeddone"  : ' + planedDone + ', "avghr" : 0}'));
+		//console.log(JSON.parse('{"week" : ' + week.id + ', "day" : ' + day + ', "sport" : 1, "type" : 1, "annotation" : "", "durationhours" : 0, "durationminutes" : 0, "planeddone"  : ' + planedDone + ', "avghr" : 0}'));
 		var request = $http({
 				method : "post",
 				url : requestUrl,
@@ -242,7 +242,7 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 				}
 			});
 		request.success(function (response) {
-			console.log(response);
+			//console.log(response);
 			//alert(response);
 			week.trainings.push(response);
 		}).
@@ -261,7 +261,7 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 			});
 		}
 
-		console.log(data);
+		//console.log(data);
 		var request = $http({
 				method : "post",
 				url : requestUrl,
@@ -271,7 +271,7 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 				}
 			});
 		request.success(function (response) {
-			console.log(response);
+			//console.log(response);
 			var index = week.trainings.indexOf(training);
 			if (index > -1) {
 				if (data.avghr === 0 && planedDone === true) {
@@ -309,8 +309,8 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 	};
 
 	$scope.avgHrOfSimilarTrainings = function (data, oldTraining, newTraining, week, index) {
-		console.log("Search AvgHr For:");
-		console.log(data);
+		//console.log("Search AvgHr For:");
+		//console.log(data);
 		var request = $http({
 				method : "post",
 				url : requestUrl,
@@ -400,6 +400,45 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 			}
 		}
 	}
+	
+	$scope.editThought = function (training) {
+		var request = $http({
+			method : "post",
+			url : requestUrl,
+			data : {
+				action : 'EditThought',
+				obj : JSON.parse('{"trainingid" : ' + training.id + ', "thought" : "' + training.thought + '"}')
+			}
+		});
+		
+		request.success(function (response) {
+		}).
+		error(function (response) {
+			alert("error");
+		});
+
+		$('#new-thought-popover').popover('hide');
+	};
+	
+	$scope.removeThought = function (training) {
+		var request = $http({
+			method : "post",
+			url : requestUrl,
+			data : {
+				action : 'RemoveThought',
+				obj : JSON.parse('{"trainingid" : ' + training.id + '}')
+			}
+		});
+		
+		request.success(function (response) {
+			training.thought = "";
+		}).
+		error(function (response) {
+			alert("error");
+		});
+
+		$('#new-thought-popover').popover('hide');
+	};
 
 	$scope.getWeekInfos = function (week) {
 		var planedVolumeMap = new Map();
@@ -519,6 +558,9 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 			} else if (attrs.id == "new-userdata-popover") {
 				var content = $("#popover-content-userdata").html();
 				var title = $("#popover-head-userdata").html();
+			} else if (attrs.id == "new-thought-popover") {
+				var content = $("#popover-content-thought").html();
+				var title = $("#popover-head-thought").html();
 			}
 
 			var compileContent = $compile(content)(scope);
