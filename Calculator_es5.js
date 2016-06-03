@@ -12,7 +12,7 @@ var Calculator = function () {
 	_createClass(Calculator, null, [{
 		key: "Init",
 		value: function Init(plans, userRestHR, userMaxHR) {
-			console.log(plans);
+			//console.log(plans);
 			Calculator.resetValues();
 			Calculator.Plan = Calculator.initPlan(plans);
 			Calculator.UserRestHR = userRestHR;
@@ -191,9 +191,9 @@ var Calculator = function () {
 					Calculator.LastWeek++;
 				}
 
-			console.log("lastWeek:" + Calculator.LastWeek);
-			console.log("lastTraining:" + Calculator.LastTraining);
-			console.log("now:" + Calculator.Now);
+			//console.log("lastWeek:" + Calculator.LastWeek);
+			//console.log("lastTraining:" + Calculator.LastTraining);
+			//console.log("now:" + Calculator.Now);
 		}
 	}, {
 		key: "createTrimps",
@@ -273,8 +273,8 @@ var Calculator = function () {
 				Calculator.Trimps_Sum += Calculator.Trimps[_i2];
 			}
 
-			console.log('trimps:' + Calculator.Trimps);
-			console.log('trimps_sum:' + Calculator.Trimps_Sum);
+			//console.log('trimps:' + Calculator.Trimps);
+			//console.log('trimps_sum:' + Calculator.Trimps_Sum);
 		}
 	}, {
 		key: "calcPerformance",
@@ -299,7 +299,7 @@ var Calculator = function () {
 			}
 
 			variance /= Math.min(Calculator.MONOn, Calculator.Trimps.length);
-			console.log(variance);
+			//console.log(variance);
 
 			if (variance !== 0) {
 				Calculator.Monotony = (avg / Math.sqrt(variance)).toFixed(2);
@@ -363,10 +363,10 @@ var Calculator = function () {
 
 			Calculator.RestDays = Math.max(0, restDays).toFixed(2);
 
-			console.log(Calculator.CTL);
-			console.log(Calculator.ATL);
-			console.log(Calculator.TSB);
-			console.log(Calculator.RestDays);
+			//console.log(Calculator.CTL);
+			//console.log(Calculator.ATL);
+			//console.log(Calculator.TSB);
+			//console.log(Calculator.RestDays);
 		}
 	}, {
 		key: "createChartData",
@@ -423,8 +423,8 @@ var Calculator = function () {
 				data: dataWeeks
 			};
 
-			console.log(Calculator.LastDays);
-			console.log(Calculator.LastWeeks);
+			//console.log(Calculator.LastDays);
+			//console.log(Calculator.LastWeeks);
 		}
 	}, {
 		key: "getWeekName",
