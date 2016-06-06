@@ -624,31 +624,52 @@ class PlanerDAL extends DAL
 	
 	public static function EditThought($trainingid, $thought)
 	{
+		//wurde ein leerer Gedanke übergeben entweder löschen oder nicht anlegen
+		$hasVal = strlen(trim($thought)) > 0;
+
 		if(self::HasThought($trainingid) == false)			//noch kein Gedanke -> erstellen
 		{
-			return self::AddThought($trainingid, $thought);
+			if($hasVal)
+			{
+				return self::AddThought($trainingid, $thought);
+			}
+			else
+			{
+				return null;
+			}
 		}
-		
-		$retVal = null;
-		
-		$conn = self::GetDbConnection();
-		
-		$sql = sprintf("UPDATE Thoughts set Thought = '%s' WHERE training = %d",
-								$conn->real_escape_string($thought),
-								$trainingid);
+		else
+		{
+			if($hasVal)			//Gedanken überarbeiten
+			{
+				$retVal = null;
+				
+				$conn = self::GetDbConnection();
+				
+				$sql = sprintf("UPDATE Thoughts set Thought = '%s' WHERE training = %d",
+										$conn->real_escape_string($thought),
+										$trainingid);
 
-		if ($conn->query($sql) === TRUE) 
-		{
-			$retVal = $thought;
-			//echo "Record updated successfully";
-		} 
-		else 
-		{
-			//echo "Error: " . $sql . "<br>" . $conn->error;
+				if ($conn->query($sql) === TRUE) 
+				{
+					$retVal = $thought;
+					//echo "Record updated successfully";
+				} 
+				else 
+				{
+					//echo "Error: " . $sql . "<br>" . $conn->error;
+				}
+				self::CloseDbConnection();
+
+				return $retVal;
+			}
+			else		//Gedanke sollte leer gesetzt werden -> löschen
+			{
+				self::RemoveThought($trainingid);
+				
+				return null;
+			}
 		}
-		self::CloseDbConnection();
-
-		return $retVal;
 	}
 }
 

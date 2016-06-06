@@ -256,7 +256,8 @@
         </div>  
       </td>
 	  <td>
-			<a data-container="body" data-toggle="popover" data-placement="left" id="new-thought-popover" popover><span style="font-size:2em;" class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+			<a data-container="body" data-toggle="popover" data-placement="left" id="new-thought-popover" popover>
+				<span ng-class="{'glyphicon glyphicon-info-sign noThought' : training.thought == null || training.thought == '', 'glyphicon glyphicon-info-sign Thought' : training.thought != ''}"  aria-hidden="true"></span>
 				<div id="popover-head-thought" class="hide">Gedanken zum Training</div>
 				<div id="popover-content-thought" class="hide"> 
 					<textarea rows="10" cols="50"  ng-model="training.thought"></textarea><br />
