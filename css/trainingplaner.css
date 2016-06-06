@@ -162,3 +162,14 @@ td.planedDone
 	text-align: center;
 	font-style: italic;
 }
+
+.Thought
+{
+	font-size:2em;
+}
+
+.noThought
+{
+	font-size:2em;
+	color: #bcbcbc;
+}

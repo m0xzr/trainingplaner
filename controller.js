@@ -75,11 +75,11 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 			//alert(JSON.stringify(response))
 			$scope.plans = response;
 			if (response.length > 0) {
-				for($i = 0; $i < response.length; $i++)		//aktiven Plan setzen
+				for(i = 0; i < response.length; i++)		//aktiven Plan setzen
 				{
-					if(response[$i].active == 1)
+					if(response[i].active == 1)
 					{
-						$scope.plan = response[$i];
+						$scope.plan = response[i];
 						break;
 					}
 				}
@@ -407,7 +407,7 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 			url : requestUrl,
 			data : {
 				action : 'EditThought',
-				obj : JSON.parse('{"trainingid" : ' + training.id + ', "thought" : "' + training.thought + '"}')
+				obj : { trainingid :  training.id , thought : training.thought }
 			}
 		});
 		
