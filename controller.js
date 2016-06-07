@@ -565,6 +565,7 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 
 			var compileContent = $compile(content)(scope);
 			var options = {
+				animation : false,
 				content : compileContent,
 				html : true,
 				title : title
