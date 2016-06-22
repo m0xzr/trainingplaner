@@ -518,4 +518,12 @@ class Calculator {
 			return '';
 		}
 	}
+	
+	static getTrimpForTraining(training) {
+		if(Calculator.UserMaxHR === 0 || Calculator.UserRestHR === 0){
+			return 0;
+		}
+		
+		return ((training.durationminutes + training.durationhours * 60) * (training.avghr - Calculator.UserRestHR) / (Calculator.UserMaxHR - Calculator.UserRestHR) * 0.64 * Math.pow(Math.E, (1.92 * (training.avghr - Calculator.UserRestHR) / (Calculator.UserMaxHR - Calculator.UserRestHR)))).toFixed(2);
+	}
 }

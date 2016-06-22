@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -10,16 +10,15 @@ var Calculator = function () {
 	}
 
 	_createClass(Calculator, null, [{
-		key: "Init",
+		key: 'Init',
 		value: function Init(plans, userRestHR, userMaxHR) {
-			//console.log(plans);
 			Calculator.resetValues();
 			Calculator.Plan = Calculator.initPlan(plans);
 			Calculator.UserRestHR = userRestHR;
 			Calculator.UserMaxHR = userMaxHR;
 		}
 	}, {
-		key: "initPlan",
+		key: 'initPlan',
 		value: function initPlan(plans) {
 			//aus mehreren Plänen einen machen
 			if (plans === null) {
@@ -54,7 +53,7 @@ var Calculator = function () {
 			return plan;
 		}
 	}, {
-		key: "resetValues",
+		key: 'resetValues',
 		value: function resetValues() {
 			Calculator.LambdaCTL = 2 / (Calculator.CTLn + 1);
 			Calculator.LambdaATL = 2 / (Calculator.ATLn + 1);
@@ -74,7 +73,7 @@ var Calculator = function () {
 			Calculator.LastDays = null;
 		}
 	}, {
-		key: "isInitialized",
+		key: 'isInitialized',
 		value: function isInitialized() {
 			if (Calculator.Plan === null || Calculator.Plan.weeks === undefined || Calculator.Plan.weeks.length === 0 || Calculator.UserMaxHR === 0 || Calculator.UserRestHR === 0) {
 				return false;
@@ -83,7 +82,7 @@ var Calculator = function () {
 			return true;
 		}
 	}, {
-		key: "createIndexes",
+		key: 'createIndexes',
 		value: function createIndexes() {
 			if (!Calculator.isInitialized()) {
 				return;
@@ -196,7 +195,7 @@ var Calculator = function () {
 			//console.log("now:" + Calculator.Now);
 		}
 	}, {
-		key: "createTrimps",
+		key: 'createTrimps',
 		value: function createTrimps() {
 			if (!Calculator.isInitialized()) {
 				return;
@@ -258,14 +257,14 @@ var Calculator = function () {
 				}
 
 				if (lastWeek === 0) {
-					return "break";
+					return 'break';
 				}
 			};
 
 			for (var i = 0; i < Math.max(Calculator.MONOn, Calculator.ATLn, Calculator.CTLn); i++) {
 				var _ret = _loop(i);
 
-				if (_ret === "break") break;
+				if (_ret === 'break') break;
 			}
 
 			//Monotonie und Strain
@@ -277,7 +276,7 @@ var Calculator = function () {
 			//console.log('trimps_sum:' + Calculator.Trimps_Sum);
 		}
 	}, {
-		key: "calcPerformance",
+		key: 'calcPerformance',
 		value: function calcPerformance() {
 			if (!Calculator.isInitialized()) {
 				return;
@@ -369,7 +368,7 @@ var Calculator = function () {
 			//console.log(Calculator.RestDays);
 		}
 	}, {
-		key: "createChartData",
+		key: 'createChartData',
 		value: function createChartData() {
 			var now = Calculator.Now;
 			var week = 0;
@@ -427,7 +426,7 @@ var Calculator = function () {
 			//console.log(Calculator.LastWeeks);
 		}
 	}, {
-		key: "getWeekName",
+		key: 'getWeekName',
 		value: function getWeekName(index) {
 			switch (index) {
 				case 0:
@@ -443,7 +442,7 @@ var Calculator = function () {
 			}
 		}
 	}, {
-		key: "getDay",
+		key: 'getDay',
 		value: function getDay(index) {
 			switch (index % 7) {
 				case 1:
@@ -466,22 +465,31 @@ var Calculator = function () {
 			}
 		}
 	}, {
-		key: "MONOn",
+		key: 'getTrimpForTraining',
+		value: function getTrimpForTraining(training) {
+			if (Calculator.UserMaxHR === 0 || Calculator.UserRestHR === 0) {
+				return 0;
+			}
+
+			return ((training.durationminutes + training.durationhours * 60) * (training.avghr - Calculator.UserRestHR) / (Calculator.UserMaxHR - Calculator.UserRestHR) * 0.64 * Math.pow(Math.E, 1.92 * (training.avghr - Calculator.UserRestHR) / (Calculator.UserMaxHR - Calculator.UserRestHR)));
+		}
+	}, {
+		key: 'MONOn',
 		get: function get() {
 			return 7;
 		}
 	}, {
-		key: "ATLn",
+		key: 'ATLn',
 		get: function get() {
 			return 7;
 		}
 	}, {
-		key: "CTLn",
+		key: 'CTLn',
 		get: function get() {
 			return 42;
 		}
 	}, {
-		key: "LambdaCTL",
+		key: 'LambdaCTL',
 		set: function set(value) {
 			Calculator._LambdaCTL = value;
 		},
@@ -489,7 +497,7 @@ var Calculator = function () {
 			return Calculator._LambdaCTL;
 		}
 	}, {
-		key: "LambdaATL",
+		key: 'LambdaATL',
 		set: function set(value) {
 			Calculator._LambdaATL = value;
 		},
@@ -497,7 +505,7 @@ var Calculator = function () {
 			return Calculator._LambdaATL;
 		}
 	}, {
-		key: "Monotony",
+		key: 'Monotony',
 		set: function set(value) {
 			Calculator._Monotony = value;
 		},
@@ -505,7 +513,7 @@ var Calculator = function () {
 			return Calculator._Monotony;
 		}
 	}, {
-		key: "Strain",
+		key: 'Strain',
 		set: function set(value) {
 			Calculator._Strain = value;
 		},
@@ -513,7 +521,7 @@ var Calculator = function () {
 			return Calculator._Strain;
 		}
 	}, {
-		key: "ATL",
+		key: 'ATL',
 		set: function set(value) {
 			Calculator._ATL = value;
 		},
@@ -521,7 +529,7 @@ var Calculator = function () {
 			return Calculator._ATL;
 		}
 	}, {
-		key: "CTL",
+		key: 'CTL',
 		set: function set(value) {
 			Calculator._CTL = value;
 		},
@@ -529,7 +537,7 @@ var Calculator = function () {
 			return Calculator._CTL;
 		}
 	}, {
-		key: "Trimps",
+		key: 'Trimps',
 		set: function set(value) {
 			Calculator._Trimps = value;
 		},
@@ -537,7 +545,7 @@ var Calculator = function () {
 			return Calculator._Trimps;
 		}
 	}, {
-		key: "Trimps_Sum",
+		key: 'Trimps_Sum',
 		set: function set(value) {
 			Calculator._Trimps_Sum = value;
 		},
@@ -545,7 +553,7 @@ var Calculator = function () {
 			return Calculator._Trimps_Sum;
 		}
 	}, {
-		key: "Plan",
+		key: 'Plan',
 		set: function set(value) {
 			Calculator._Plan = value;
 		},
@@ -553,7 +561,7 @@ var Calculator = function () {
 			return Calculator._Plan;
 		}
 	}, {
-		key: "LastWeek",
+		key: 'LastWeek',
 		set: function set(value) {
 			Calculator._LastWeek = value;
 		},
@@ -561,7 +569,7 @@ var Calculator = function () {
 			return Calculator._LastWeek;
 		}
 	}, {
-		key: "LastTraining",
+		key: 'LastTraining',
 		set: function set(value) {
 			Calculator._LastTraining = value;
 		},
@@ -569,7 +577,7 @@ var Calculator = function () {
 			return Calculator._LastTraining;
 		}
 	}, {
-		key: "WeekDay",
+		key: 'WeekDay',
 		get: function get() {
 			var day = new Date().getDay();
 			if (day === 0) {
@@ -578,7 +586,7 @@ var Calculator = function () {
 			return day;
 		}
 	}, {
-		key: "Now",
+		key: 'Now',
 		get: function get() {
 			var now = Calculator.WeekDay;
 
@@ -589,7 +597,7 @@ var Calculator = function () {
 			return now;
 		}
 	}, {
-		key: "UserRestHR",
+		key: 'UserRestHR',
 		set: function set(value) {
 			Calculator._UserRestHR = value;
 		},
@@ -597,7 +605,7 @@ var Calculator = function () {
 			return Calculator._UserRestHR;
 		}
 	}, {
-		key: "UserMaxHR",
+		key: 'UserMaxHR',
 		set: function set(value) {
 			Calculator._UserMaxHR = value;
 		},
@@ -605,7 +613,7 @@ var Calculator = function () {
 			return Calculator._UserMaxHR;
 		}
 	}, {
-		key: "TSB",
+		key: 'TSB',
 		set: function set(value) {
 			Calculator._TSB = value;
 		},
@@ -613,7 +621,7 @@ var Calculator = function () {
 			return Calculator._TSB;
 		}
 	}, {
-		key: "RestDays",
+		key: 'RestDays',
 		set: function set(value) {
 			Calculator._RestDays = value;
 		},
@@ -621,7 +629,7 @@ var Calculator = function () {
 			return Calculator._RestDays;
 		}
 	}, {
-		key: "LastWeeks",
+		key: 'LastWeeks',
 		set: function set(value) {
 			Calculator._LastWeeks = value;
 		},
@@ -629,7 +637,7 @@ var Calculator = function () {
 			return Calculator._LastWeeks;
 		}
 	}, {
-		key: "LastDays",
+		key: 'LastDays',
 		set: function set(value) {
 			Calculator._LastDays = value;
 		},

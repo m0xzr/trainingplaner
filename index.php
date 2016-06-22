@@ -236,9 +236,12 @@
 		</table>
       </td>
 	  <td>
-        <span editable-text="training.annotation" e-name="annotation" e-form="rowform">
-          {{ training.annotation || "" }}
-        </span>
+		<table><tr><td>
+			<span editable-text="training.annotation" e-name="annotation" e-form="rowform">
+			  {{ training.annotation || "" }}
+			</span>
+		</td></tr>
+		<tr><td>Trimp <span ng-bind="getTrimp(training)"></td></tr></table>
       </td>
       <td style="white-space: nowrap">
         <!-- form -->

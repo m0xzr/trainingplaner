@@ -439,6 +439,10 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 
 		$('#new-thought-popover').popover('hide');
 	};
+	
+	$scope.getTrimp = function(training) {
+		return Calculator.getTrimpForTraining(training).toFixed(2);
+	}
 
 	$scope.getWeekInfos = function (week) {
 		var planedVolumeMap = new Map();
@@ -470,7 +474,7 @@ app.controller('Ctrl', function ($scope, $filter, $http) {
 				mins += week.trainings[i].durationhours * 60 + week.trainings[i].durationminutes;
 				doneTotal += week.trainings[i].durationhours * 60 + week.trainings[i].durationminutes;
 
-				trimp += (week.trainings[i].durationminutes + week.trainings[i].durationhours * 60) * (week.trainings[i].avghr - $scope.userdata.hrrest) / ($scope.userdata.hrmax - $scope.userdata.hrrest) * 0.64 * Math.pow(Math.E, (1.92 * (week.trainings[i].avghr - $scope.userdata.hrrest) / ($scope.userdata.hrmax - $scope.userdata.hrrest)));
+				trimp += Calculator.getTrimpForTraining(week.trainings[i]);
 
 				doneVolumeMap.set(week.trainings[i].sportandtype.sport, mins);
 			}
